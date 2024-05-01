@@ -65,10 +65,14 @@
               "buildTarget": "adeverinte-UPT-FE:build:production"
             },
             "development": {
-              "buildTarget": "adeverinte-UPT-FE:build:development"
+              "buildTarget": "adeverinte-UPT-FE:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
