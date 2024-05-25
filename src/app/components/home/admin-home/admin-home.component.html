@@ -1,0 +1,108 @@
+<div class="mb-4 sm:mb-8 text-3xl sm:text-5xl font-bold">Tipuri Adeverințe</div>
+<div class="flex justify-between mb-5">
+  <button
+    id="dropdownCheckboxButton"
+    data-dropdown-toggle="dropdownDefaultCheckbox"
+    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button"
+  >
+    Specializare
+    <svg
+      class="w-2.5 h-2.5 ms-3"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 10 6"
+    >
+      <path
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="m1 1 4 4 4-4"
+      />
+    </svg>
+  </button>
+
+  <div
+    id="dropdownDefaultCheckbox"
+    class="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+  >
+    <form
+      [formGroup]="form"
+      class="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200"
+      aria-labelledby="dropdownCheckboxButton"
+    >
+      <div formArrayName="specializations">
+        <div
+          *ngFor="let specialization of specializations; let i = index"
+          class="flex items-center"
+        >
+          <input
+            type="checkbox"
+            [formControlName]="i"
+            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+          />
+          <label
+            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >{{ specialization }}</label
+          >
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <button
+    data-modal-target="default-modal"
+    data-modal-toggle="default-modal"
+    type="button"
+    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+  >
+    Adaugă tip nou
+  </button>
+</div>
+<div
+  class="relative w-[calc(100vw-32px)] sm:w-[calc(100vw-80px)] max-h-[calc(100vh-144px)] sm:max-h-[calc(100vh-220px)] overflow-auto shadow-md sm:rounded-lg"
+>
+  <table
+    class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+  >
+    <thead
+      class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+    >
+      <tr>
+        <th scope="col" class="px-6 py-3">Tip Adeverință</th>
+        <th scope="col" class="px-6 py-3">Data Încărcării</th>
+        <th scope="col" class="px-6 py-3">Data Actualizării</th>
+        <th scope="col" class="px-6 py-3">Template</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let template of templates"
+        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+      >
+        <th
+          scope="row"
+          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+        >
+          {{ template.name | titlecase }}
+        </th>
+        <td class="px-6 py-4">
+          {{ template.createDate | date: 'dd/MM/yyyy' }}
+        </td>
+        <td class="px-6 py-4">
+          {{ template.updateDate | date: 'dd/MM/yyyy' }}
+        </td>
+        <td
+          (click)="downloadTemplate(template.filePath)"
+          class="px-6 py-4 cursor-pointer text-blue-500 underline"
+        >
+          Download
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-modal></app-modal>

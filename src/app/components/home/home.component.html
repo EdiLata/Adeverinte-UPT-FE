@@ -1,1 +1,11 @@
-<p>home works!</p>
+<div class="flex p-4 sm:p-10">
+  <div *ngIf="isAdmin">
+    <app-admin-home></app-admin-home>
+  </div>
+  <div *ngIf="isSecretary && !isAdmin">
+    <app-secretary-home></app-secretary-home>
+  </div>
+  <div *ngIf="isStudent && !isAdmin && !isSecretary">
+    <app-student-home></app-student-home>
+  </div>
+</div>

@@ -4,6 +4,7 @@ import {IUser} from '../interfaces/user.model';
 import {tap} from 'rxjs';
 import {ILoginResponse} from '../interfaces/login-response.model';
 import {jwtDecode} from 'jwt-decode';
+import {UserRole} from '../enums/user-role.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -11,11 +12,16 @@ import {jwtDecode} from 'jwt-decode';
 export class AuthenticationService {
   private readonly http = inject(HttpClient);
 
-  constructor() {}
-
   public registerUser(user: IUser) {
     return this.http.post<any>(
       `http://localhost:3000/authentication/register`,
+      user,
+    );
+  }
+
+  public resetPassword(user: IUser) {
+    return this.http.post<any>(
+      `http://localhost:3000/authentication/reset-password`,
       user,
     );
   }
@@ -54,5 +60,17 @@ export class AuthenticationService {
   public getUserEmail(): string[] {
     const decodedToken = this.decodeToken();
     return decodedToken ? decodedToken.email : null;
+  }
+
+  public isStudent() {
+    return this.getUserRoles().includes(UserRole.STUDENT);
+  }
+
+  public isAdmin() {
+    return this.getUserRoles().includes(UserRole.ADMIN);
+  }
+
+  public isSecretary() {
+    return this.getUserRoles().includes(UserRole.SECRETARY);
   }
 }

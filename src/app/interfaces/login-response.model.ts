@@ -1,8 +1,4 @@
-export enum UserRole {
-  ADMIN = 'Admin',
-  SECRETARA = 'Secretara',
-  STUDENT = 'Student',
-}
+import {UserRole} from '../enums/user-role.enum';
 
 export interface ILoginResponse {
   email: string;
