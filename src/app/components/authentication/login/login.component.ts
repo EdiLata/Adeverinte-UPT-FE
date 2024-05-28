@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import {
   FormControl,
@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import {AuthenticationService} from '../../../services/authentication.service';
 import {IUser} from '../../../interfaces/user.model';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
@@ -22,8 +23,9 @@ export class LoginComponent {
     email: new FormControl(''),
     password: new FormControl(''),
   });
-  private authenticationService = inject(AuthenticationService);
-  private router = inject(Router);
+  private readonly authenticationService = inject(AuthenticationService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   public loginUser() {
     let user: IUser = {
@@ -31,14 +33,17 @@ export class LoginComponent {
       password: this.loginForm.controls['password'].value,
     };
 
-    this.authenticationService.loginUser(user).subscribe({
-      next: (response) => {
-        console.log('Login successful', response);
-        this.router.navigate(['/home']);
-      },
-      error: (error) => {
-        console.error('Login failed', error);
-      },
-    });
+    this.authenticationService
+      .loginUser(user)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          console.log('Login successful', response);
+          this.router.navigate(['/home']);
+        },
+        error: (error) => {
+          console.error('Login failed', error);
+        },
+      });
   }
 }

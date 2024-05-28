@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -10,16 +10,17 @@ import {
 import {CommonModule} from '@angular/common';
 import {Specialization} from '../../../../enums/specialization.enum';
 import {TemplateService} from '../../../../services/template.service';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-modal',
+  selector: 'app-modal-add',
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, CommonModule],
   providers: [TemplateService],
-  templateUrl: './modal.component.html',
-  styleUrl: './modal.component.scss',
+  templateUrl: './modal-add.component.html',
+  styleUrl: './modal-add.component.scss',
 })
-export class ModalComponent implements OnInit {
+export class ModalAddComponent implements OnInit {
   public modalSpecializations = Object.values(Specialization);
   public fileError: string | null = null;
   public modalForm: FormGroup = new FormGroup({
@@ -29,6 +30,7 @@ export class ModalComponent implements OnInit {
     dynamicInputs: new FormArray([]),
   });
   private readonly templateService = inject(TemplateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.initSpecializations();
@@ -92,9 +94,12 @@ export class ModalComponent implements OnInit {
       formData.append('fields', template.fields);
       formData.append('specializations', template.specializations);
 
-      this.templateService.uploadTemplate(formData).subscribe((data) => {
-        console.log(data);
-      });
+      this.templateService
+        .uploadTemplate(formData)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((data) => {
+          console.log(data);
+        });
     }
   }
 }

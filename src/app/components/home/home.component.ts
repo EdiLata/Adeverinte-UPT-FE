@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
   public isAdmin = false;
   public isStudent = false;
   public isSecretary = false;
-  private authService = inject(AuthenticationService);
+  private readonly authService = inject(AuthenticationService);
 
   ngOnInit() {
     this.isSecretary = this.authService.isSecretary();

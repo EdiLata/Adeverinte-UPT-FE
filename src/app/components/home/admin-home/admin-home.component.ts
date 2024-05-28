@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {TemplateService} from '../../../services/template.service';
 import {CommonModule} from '@angular/common';
 import {Specialization} from '../../../enums/specialization.enum';
@@ -8,12 +8,23 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {ModalComponent} from './modal/modal.component';
+
+import {NgxDocViewerModule} from 'ngx-doc-viewer';
+import {DomSanitizer} from '@angular/platform-browser';
+import {ModalAddComponent} from './modal-add/modal-add.component';
+import {ModalViewComponent} from './modal-view/modal-view.component';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ModalComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ModalAddComponent,
+    NgxDocViewerModule,
+    ModalViewComponent,
+  ],
   providers: [TemplateService],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss',
@@ -24,7 +35,9 @@ export class AdminHomeComponent implements OnInit {
   public form: FormGroup = new FormGroup({
     specializations: new FormArray([]),
   });
+  private readonly sanitizer = inject(DomSanitizer);
   private readonly templateService = inject(TemplateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.initSpecializations();
@@ -33,22 +46,25 @@ export class AdminHomeComponent implements OnInit {
 
   public downloadTemplate(template: string) {
     const parts = template.split('\\');
-    this.templateService.downloadTemplate(parts[parts.length - 1]).subscribe(
-      (response) => {
-        const blob = new Blob([response], {type: response.type});
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'template';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      },
-      (error) => {
-        console.error('Error downloading the file', error);
-      },
-    );
+    this.templateService
+      .downloadTemplate(parts[parts.length - 1])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(
+        (response) => {
+          const blob = new Blob([response], {type: response.type});
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'template';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        },
+        (error) => {
+          console.error('Error downloading the file', error);
+        },
+      );
   }
 
   private initSpecializations() {
@@ -58,10 +74,11 @@ export class AdminHomeComponent implements OnInit {
       );
     });
 
-    this.form.controls['specializations'].valueChanges.subscribe((data) => {
-      console.log(data);
-      this.getTemplates();
-    });
+    this.form.controls['specializations'].valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.getTemplates();
+      });
   }
 
   private getSelectedSpecializations() {
@@ -74,15 +91,36 @@ export class AdminHomeComponent implements OnInit {
 
   private getTemplates() {
     const selectedSpecializations = this.getSelectedSpecializations();
-    console.log(selectedSpecializations);
-    this.templateService.getTemplates(selectedSpecializations).subscribe(
-      (data) => {
-        console.log(data);
-        this.templates = data;
-      },
-      (error) => {
-        console.error('Error fetching templates', error);
-      },
-    );
+    this.templateService
+      .getTemplates(selectedSpecializations)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(
+        (data) => {
+          this.templates = data;
+        },
+        (error) => {
+          console.error('Error fetching templates', error);
+        },
+      );
+  }
+
+  public loadDocument(filePath: string): void {
+    const parts = filePath.split(/uploads[\\/]/);
+    this.templateService
+      .getFileUrl(parts[1])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((response) => {
+        const safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(
+          response.html,
+        );
+        this.templateService.setViewModalContent(safeHtmlContent);
+      });
+  }
+
+  public deleteTemplate(id: number) {
+    this.templateService
+      .deleteTemplate(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((response) => {});
   }
 }

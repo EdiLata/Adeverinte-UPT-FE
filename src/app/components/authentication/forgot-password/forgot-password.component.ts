@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import {
   FormControl,
@@ -10,6 +10,7 @@ import {confirmPasswordValidator} from '../validators';
 import {AuthenticationService} from '../../../services/authentication.service';
 import {IUser} from '../../../interfaces/user.model';
 import {NgIf} from '@angular/common';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-forgot-password',
@@ -28,8 +29,9 @@ export class ForgotPasswordComponent {
     },
     {validators: confirmPasswordValidator},
   );
-  private authenticationService = inject(AuthenticationService);
-  private router = inject(Router);
+  private readonly authenticationService = inject(AuthenticationService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   public resetPassword() {
     if (this.forgotPasswordForm.valid) {
@@ -38,15 +40,18 @@ export class ForgotPasswordComponent {
         password: this.forgotPasswordForm.controls['password'].value,
       };
 
-      this.authenticationService.resetPassword(user).subscribe({
-        next: (response) => {
-          console.log('Reset Password successful', response);
-          this.router.navigate(['/login']);
-        },
-        error: (error) => {
-          console.error('Reset Password failed', error);
-        },
-      });
+      this.authenticationService
+        .resetPassword(user)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response) => {
+            console.log('Reset Password successful', response);
+            this.router.navigate(['/login']);
+          },
+          error: (error) => {
+            console.error('Reset Password failed', error);
+          },
+        });
     }
   }
 }

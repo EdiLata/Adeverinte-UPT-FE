@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,6 +11,7 @@ import {Router, RouterModule} from '@angular/router';
 import {IUser} from '../../../interfaces/user.model';
 import {confirmPasswordValidator} from '../validators';
 import {NgIf} from '@angular/common';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-registration',
@@ -29,8 +30,9 @@ export class RegistrationComponent {
     },
     {validators: confirmPasswordValidator},
   );
-  private authenticationService = inject(AuthenticationService);
-  private router = inject(Router);
+  private readonly authenticationService = inject(AuthenticationService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   public registerUser() {
     if (this.registerForm.valid) {
@@ -39,15 +41,18 @@ export class RegistrationComponent {
         password: this.registerForm.controls['password'].value,
       };
 
-      this.authenticationService.registerUser(user).subscribe({
-        next: (response) => {
-          console.log('Register successful', response);
-          this.router.navigate(['/login']);
-        },
-        error: (error) => {
-          console.error('Register failed', error);
-        },
-      });
+      this.authenticationService
+        .registerUser(user)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response) => {
+            console.log('Register successful', response);
+            this.router.navigate(['/login']);
+          },
+          error: (error) => {
+            console.error('Register failed', error);
+          },
+        });
     }
   }
 }
