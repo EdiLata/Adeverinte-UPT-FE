@@ -149,7 +149,7 @@
 
           <button
             class="cursor-pointer flex gap-3 items-center"
-            (click)="loadDocument(template.filePath)"
+            (click)="openEditTemplateModal(template.id)"
           >
             <svg
               class="w-6 h-6 text-gray-800 dark:text-white"
@@ -173,7 +173,7 @@
 
           <button
             class="cursor-pointer flex gap-3 items-center"
-            (click)="deleteTemplate(template.id)"
+            (click)="openDeleteTemplateModal(template.id)"
           >
             <svg
               class="w-6 h-6 text-gray-800 dark:text-white"
@@ -202,3 +202,5 @@
 
 <app-modal-add></app-modal-add>
 <app-modal-view></app-modal-view>
+<app-modal-edit></app-modal-edit>
+<app-modal-delete></app-modal-delete>

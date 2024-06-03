@@ -14,6 +14,8 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {ModalAddComponent} from './modal-add/modal-add.component';
 import {ModalViewComponent} from './modal-view/modal-view.component';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ModalDeleteComponent} from './modal-delete/modal-delete.component';
+import {ModalEditComponent} from './modal-edit/modal-edit.component';
 
 @Component({
   selector: 'app-admin-home',
@@ -24,6 +26,8 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
     ModalAddComponent,
     NgxDocViewerModule,
     ModalViewComponent,
+    ModalDeleteComponent,
+    ModalEditComponent,
   ],
   providers: [TemplateService],
   templateUrl: './admin-home.component.html',
@@ -31,10 +35,10 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 })
 export class AdminHomeComponent implements OnInit {
   public specializations = Object.values(Specialization);
-  public templates: any[] = [];
   public form: FormGroup = new FormGroup({
     specializations: new FormArray([]),
   });
+  public templates: any = [];
   private readonly sanitizer = inject(DomSanitizer);
   private readonly templateService = inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
@@ -42,6 +46,12 @@ export class AdminHomeComponent implements OnInit {
   ngOnInit() {
     this.initSpecializations();
     this.getTemplates();
+    this.templateService
+      .getTemplatesSource()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.templates = value;
+      });
   }
 
   public downloadTemplate(template: string) {
@@ -96,10 +106,11 @@ export class AdminHomeComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (data) => {
-          this.templates = data;
+          this.templateService.setTemplatesSource(data);
         },
         (error) => {
           console.error('Error fetching templates', error);
+          this.templateService.setTemplatesSource(null);
         },
       );
   }
@@ -117,10 +128,11 @@ export class AdminHomeComponent implements OnInit {
       });
   }
 
-  public deleteTemplate(id: number) {
-    this.templateService
-      .deleteTemplate(id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((response) => {});
+  public openDeleteTemplateModal(id: number) {
+    this.templateService.setDeleteModal(id);
+  }
+
+  public openEditTemplateModal(id: number) {
+    this.templateService.setEditModal(id);
   }
 }

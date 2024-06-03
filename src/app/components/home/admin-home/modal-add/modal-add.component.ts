@@ -16,12 +16,11 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   selector: 'app-modal-add',
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, CommonModule],
-  providers: [TemplateService],
   templateUrl: './modal-add.component.html',
   styleUrl: './modal-add.component.scss',
 })
 export class ModalAddComponent implements OnInit {
-  public modalSpecializations = Object.values(Specialization);
+  public specializations = Object.values(Specialization);
   public fileError: string | null = null;
   public modalForm: FormGroup = new FormGroup({
     name: new FormControl(''),
@@ -29,15 +28,22 @@ export class ModalAddComponent implements OnInit {
     templateFile: new FormControl(null),
     dynamicInputs: new FormArray([]),
   });
+  public templates: any = [];
   private readonly templateService = inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.initSpecializations();
+    this.templateService
+      .getTemplatesSource()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.templates = value;
+      });
   }
 
   private initSpecializations() {
-    this.modalSpecializations.forEach(() => {
+    this.specializations.forEach(() => {
       (this.modalForm.controls['modalSpecializations'] as FormArray).push(
         new FormControl(false),
       );
@@ -47,7 +53,7 @@ export class ModalAddComponent implements OnInit {
   private getSelectedSpecializations() {
     return this.modalForm.controls['modalSpecializations'].value
       .map((checked: boolean, index: number) =>
-        checked ? this.modalSpecializations[index] : null,
+        checked ? this.specializations[index] : null,
       )
       .filter((value: string | null) => value !== null);
   }
@@ -97,9 +103,18 @@ export class ModalAddComponent implements OnInit {
       this.templateService
         .uploadTemplate(formData)
         .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe((data) => {
-          console.log(data);
-        });
+        .subscribe(
+          (data) => {
+            console.log(data);
+            this.templateService.setTemplatesSource(
+              this.templates.concat(data),
+            );
+          },
+          (error) => {
+            console.error('Error uploading template', error);
+            this.templateService.setTemplatesSource(this.templates);
+          },
+        );
     }
   }
 }

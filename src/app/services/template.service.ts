@@ -11,6 +11,33 @@ export class TemplateService {
   private readonly http = inject(HttpClient);
 
   private viewModalContentSource = new BehaviorSubject<SafeHtml | null>(null);
+  private deleteModalSource = new BehaviorSubject<number | null>(null);
+  private templatesSource = new BehaviorSubject<any>(null);
+  private editModalSource = new BehaviorSubject<number | null>(null);
+
+  public setEditModal(id: number): void {
+    this.editModalSource.next(id);
+  }
+
+  public getEditModal() {
+    return this.editModalSource.asObservable();
+  }
+
+  public setTemplatesSource(templates: any): void {
+    this.templatesSource.next(templates);
+  }
+
+  public getTemplatesSource() {
+    return this.templatesSource.asObservable();
+  }
+
+  public setDeleteModal(id: number): void {
+    this.deleteModalSource.next(id);
+  }
+
+  public getDeleteModal() {
+    return this.deleteModalSource.asObservable();
+  }
 
   public setViewModalContent(content: SafeHtml) {
     this.viewModalContentSource.next(content);
@@ -21,9 +48,19 @@ export class TemplateService {
   }
 
   public uploadTemplate(formData: any) {
-    console.log(formData);
     return this.http.post<any>(
       `http://localhost:3000/templates/upload`,
+      formData,
+    );
+  }
+
+  public getTemplate(id: number) {
+    return this.http.get<any>(`http://localhost:3000/templates/${id}`);
+  }
+
+  public editTemplate(id: number, formData: any) {
+    return this.http.put<any>(
+      `http://localhost:3000/templates/${id}`,
       formData,
     );
   }
