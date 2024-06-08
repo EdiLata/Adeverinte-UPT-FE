@@ -1,4 +1,4 @@
-import {DestroyRef, inject, Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Specialization} from '../enums/specialization.enum';
 import {BehaviorSubject} from 'rxjs';
@@ -10,10 +10,20 @@ import {SafeHtml} from '@angular/platform-browser';
 export class TemplateService {
   private readonly http = inject(HttpClient);
 
+  private templatesSource = new BehaviorSubject<any>(null);
+  private studentResponsesSource = new BehaviorSubject<any>(null);
+
   private viewModalContentSource = new BehaviorSubject<SafeHtml | null>(null);
   private deleteModalSource = new BehaviorSubject<number | null>(null);
-  private templatesSource = new BehaviorSubject<any>(null);
   private editModalSource = new BehaviorSubject<number | null>(null);
+
+  public setStudentResponsesSource(responses: any): void {
+    this.studentResponsesSource.next(responses);
+  }
+
+  public getStudentResponsesSource() {
+    return this.studentResponsesSource.asObservable();
+  }
 
   public setEditModal(id: number): void {
     this.editModalSource.next(id);
@@ -85,6 +95,12 @@ export class TemplateService {
       });
     }
     return this.http.get<any>(`http://localhost:3000/templates`, {params});
+  }
+
+  public getStudentResponses(studentId: number) {
+    return this.http.get<any>(
+      `http://localhost:3000/templates/student-responses/${studentId}`,
+    );
   }
 
   public downloadTemplate(template: string) {

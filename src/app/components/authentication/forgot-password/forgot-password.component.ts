@@ -8,7 +8,6 @@ import {
 } from '@angular/forms';
 import {confirmPasswordValidator} from '../validators';
 import {AuthenticationService} from '../../../services/authentication.service';
-import {IUser} from '../../../interfaces/user.model';
 import {NgIf} from '@angular/common';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
@@ -35,7 +34,7 @@ export class ForgotPasswordComponent {
 
   public resetPassword() {
     if (this.forgotPasswordForm.valid) {
-      let user: IUser = {
+      let user = {
         email: this.forgotPasswordForm.controls['email'].value,
         password: this.forgotPasswordForm.controls['password'].value,
       };

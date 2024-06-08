@@ -7,7 +7,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import {AuthenticationService} from '../../../services/authentication.service';
-import {IUser} from '../../../interfaces/user.model';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
@@ -28,7 +27,7 @@ export class LoginComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   public loginUser() {
-    let user: IUser = {
+    let user = {
       email: this.loginForm.controls['email'].value,
       password: this.loginForm.controls['password'].value,
     };

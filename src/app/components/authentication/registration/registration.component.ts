@@ -8,7 +8,6 @@ import {
 } from '@angular/forms';
 import {AuthenticationService} from '../../../services/authentication.service';
 import {Router, RouterModule} from '@angular/router';
-import {IUser} from '../../../interfaces/user.model';
 import {confirmPasswordValidator} from '../validators';
 import {NgIf} from '@angular/common';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
@@ -36,7 +35,7 @@ export class RegistrationComponent {
 
   public registerUser() {
     if (this.registerForm.valid) {
-      let user: IUser = {
+      let user = {
         email: this.registerForm.controls['email'].value,
         password: this.registerForm.controls['password'].value,
       };

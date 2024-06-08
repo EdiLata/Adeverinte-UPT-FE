@@ -1,0 +1,11 @@
+@media (max-width: 768px) {
+  #dropdownInformationDesktop {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  #dropdownInformationMobile {
+    display: none;
+  }
+}
