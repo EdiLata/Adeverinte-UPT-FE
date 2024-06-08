@@ -1,12 +1,5 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  DestroyRef,
-  inject,
-  OnInit,
-} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ModalAddComponent} from '../admin-home/modal-add/modal-add.component';
 import {ModalDeleteComponent} from '../admin-home/modal-delete/modal-delete.component';
 import {ModalEditComponent} from '../admin-home/modal-edit/modal-edit.component';
 import {ModalViewComponent} from '../admin-home/modal-view/modal-view.component';
@@ -16,18 +9,19 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {AuthenticationService} from '../../../services/authentication.service';
 import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {StudentResponseModalAddComponent} from './student-response-modal-add/student-response-modal-add.component';
 
 @Component({
   selector: 'app-student-home',
   standalone: true,
   imports: [
     CommonModule,
-    ModalAddComponent,
     NgxDocViewerModule,
     ModalViewComponent,
     ModalDeleteComponent,
     ModalEditComponent,
     ReactiveFormsModule,
+    StudentResponseModalAddComponent,
   ],
   providers: [TemplateService, AuthenticationService],
   templateUrl: './student-home.component.html',
@@ -98,7 +92,6 @@ export class StudentHomeComponent implements OnInit {
       .subscribe(
         (data) => {
           this.templateService.setStudentResponsesSource(data);
-          console.log(data);
           this.searchedStudentResponses = data;
         },
         (error) => {

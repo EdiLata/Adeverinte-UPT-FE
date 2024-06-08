@@ -64,6 +64,13 @@ export class TemplateService {
     );
   }
 
+  public fillTemplate(formData: any) {
+    return this.http.post<any>(
+      `http://localhost:3000/templates/fill`,
+      formData,
+    );
+  }
+
   public getTemplate(id: number) {
     return this.http.get<any>(`http://localhost:3000/templates/${id}`);
   }
@@ -100,6 +107,12 @@ export class TemplateService {
   public getStudentResponses(studentId: number) {
     return this.http.get<any>(
       `http://localhost:3000/templates/student-responses/${studentId}`,
+    );
+  }
+
+  public getTemplateFields(templateId: number) {
+    return this.http.get<any>(
+      `http://localhost:3000/templates/fields/${templateId}`,
     );
   }
 
