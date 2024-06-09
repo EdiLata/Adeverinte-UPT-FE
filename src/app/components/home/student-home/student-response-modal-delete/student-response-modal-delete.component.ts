@@ -3,31 +3,31 @@ import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-modal-delete',
+  selector: 'app-student-response-modal-delete',
   standalone: true,
   imports: [],
-  templateUrl: './modal-delete.component.html',
-  styleUrl: './modal-delete.component.scss',
+  templateUrl: './student-response-modal-delete.component.html',
+  styleUrl: './student-response-modal-delete.component.scss',
 })
-export class ModalDeleteComponent implements OnInit {
-  public templateId: number | null = null;
-  public templates: any = [];
+export class StudentResponseModalDeleteComponent implements OnInit {
+  public studentResponseId: number | null = null;
+  public studentResponses: any = [];
   private readonly destroyRef = inject(DestroyRef);
   private readonly templateService = inject(TemplateService);
 
   ngOnInit() {
     this.templateService
-      .getTemplatesSource()
+      .getStudentResponsesSource()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        this.templates = value;
+        this.studentResponses = value;
       });
 
     this.templateService
       .getDeleteModal()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        this.templateId = value;
+        this.studentResponseId = value;
         if (value) {
           this.openModal();
         } else {
@@ -37,35 +37,39 @@ export class ModalDeleteComponent implements OnInit {
   }
 
   public openModal() {
-    const modal = document.getElementById('delete-modal');
+    const modal = document.getElementById('student-response-delete-modal');
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('delete-modal');
+    const modal = document.getElementById('student-response-delete-modal');
     if (modal) {
       modal.style.display = 'none';
     }
   }
 
-  public deleteTemplate(id: number | null) {
+  public deleteStudentResponse(id: number | null) {
     if (id) {
       this.templateService
-        .deleteTemplate(id)
+        .deleteStudentResponse(id)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           () => {
-            const templatesAfterRemoval = this.templates.filter(
+            const studentResponsesAfterRemoval = this.studentResponses.filter(
               (item: any) => item.id !== id,
             );
-            this.templateService.setTemplatesSource(templatesAfterRemoval);
+            this.templateService.setStudentResponsesSource(
+              studentResponsesAfterRemoval,
+            );
             this.closeModal();
           },
           (error) => {
-            console.error('Error deleting template', error);
-            this.templateService.setTemplatesSource(this.templates);
+            console.error('Error deleting student response', error);
+            this.templateService.setStudentResponsesSource(
+              this.studentResponses,
+            );
             this.closeModal();
           },
         );

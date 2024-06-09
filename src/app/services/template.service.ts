@@ -94,6 +94,12 @@ export class TemplateService {
     );
   }
 
+  public deleteStudentResponse(studentResponseId: number) {
+    return this.http.delete<any>(
+      `http://localhost:3000/templates/student-responses/${studentResponseId}`,
+    );
+  }
+
   public getTemplates(specializations?: Specialization[]) {
     let params = new HttpParams();
     if (specializations && specializations.length > 0) {
@@ -106,7 +112,20 @@ export class TemplateService {
 
   public getStudentResponses(studentId: number) {
     return this.http.get<any>(
-      `http://localhost:3000/templates/student-responses/${studentId}`,
+      `http://localhost:3000/templates/student-responses/by-student-id/${studentId}`,
+    );
+  }
+
+  public getStudentResponse(studentResponseId: number) {
+    return this.http.get<any>(
+      `http://localhost:3000/templates/student-responses/${studentResponseId}`,
+    );
+  }
+
+  public editStudentResponse(studentResponseId: number, formData: any) {
+    return this.http.put<any>(
+      `http://localhost:3000/templates/student-responses/${studentResponseId}`,
+      formData,
     );
   }
 

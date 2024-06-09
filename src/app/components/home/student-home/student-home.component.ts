@@ -1,7 +1,5 @@
 import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ModalDeleteComponent} from '../admin-home/modal-delete/modal-delete.component';
-import {ModalEditComponent} from '../admin-home/modal-edit/modal-edit.component';
 import {ModalViewComponent} from '../admin-home/modal-view/modal-view.component';
 import {TemplateService} from '../../../services/template.service';
 import {NgxDocViewerModule} from 'ngx-doc-viewer';
@@ -10,6 +8,8 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {AuthenticationService} from '../../../services/authentication.service';
 import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {StudentResponseModalAddComponent} from './student-response-modal-add/student-response-modal-add.component';
+import {StudentResponseModalDeleteComponent} from './student-response-modal-delete/student-response-modal-delete.component';
+import {StudentResponseModalEditComponent} from './student-response-modal-edit/student-response-modal-edit.component';
 
 @Component({
   selector: 'app-student-home',
@@ -18,10 +18,10 @@ import {StudentResponseModalAddComponent} from './student-response-modal-add/stu
     CommonModule,
     NgxDocViewerModule,
     ModalViewComponent,
-    ModalDeleteComponent,
-    ModalEditComponent,
     ReactiveFormsModule,
     StudentResponseModalAddComponent,
+    StudentResponseModalDeleteComponent,
+    StudentResponseModalEditComponent,
   ],
   providers: [TemplateService, AuthenticationService],
   templateUrl: './student-home.component.html',
