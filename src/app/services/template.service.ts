@@ -3,6 +3,8 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Specialization} from '../enums/specialization.enum';
 import {BehaviorSubject} from 'rxjs';
 import {SafeHtml} from '@angular/platform-browser';
+import {ResponseStatus} from '../enums/response-status.enum';
+import {Faculty} from '../enums/faculty.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +14,20 @@ export class TemplateService {
 
   private templatesSource = new BehaviorSubject<any>(null);
   private studentResponsesSource = new BehaviorSubject<any>(null);
+  private allStudentsResponsesSource = new BehaviorSubject<any>(null);
 
+  private addModalSource = new BehaviorSubject<boolean>(false);
   private viewModalContentSource = new BehaviorSubject<SafeHtml | null>(null);
   private deleteModalSource = new BehaviorSubject<number | null>(null);
   private editModalSource = new BehaviorSubject<number | null>(null);
+
+  public setAllStudentsResponsesSource(responses: any): void {
+    this.allStudentsResponsesSource.next(responses);
+  }
+
+  public getAllStudentsResponsesSource() {
+    return this.allStudentsResponsesSource.asObservable();
+  }
 
   public setStudentResponsesSource(responses: any): void {
     this.studentResponsesSource.next(responses);
@@ -23,6 +35,14 @@ export class TemplateService {
 
   public getStudentResponsesSource() {
     return this.studentResponsesSource.asObservable();
+  }
+
+  public setAddModal(isOpened: boolean): void {
+    this.addModalSource.next(isOpened);
+  }
+
+  public getAddModal() {
+    return this.addModalSource.asObservable();
   }
 
   public setEditModal(id: number): void {
@@ -108,6 +128,51 @@ export class TemplateService {
       });
     }
     return this.http.get<any>(`http://localhost:3000/templates`, {params});
+  }
+
+  public getAllStudentsResponses(
+    status?: ResponseStatus,
+    faculties?: Faculty[],
+    specializations?: Specialization[],
+    years?: number[],
+    page?: number,
+    limit?: number,
+  ) {
+    let params = new HttpParams();
+    if (status) {
+      params = params.append('status', status);
+    }
+
+    if (faculties && faculties.length > 0) {
+      faculties.forEach((faculty) => {
+        params = params.append('faculties', faculty);
+      });
+    }
+
+    if (specializations && specializations.length > 0) {
+      specializations.forEach((specialization) => {
+        params = params.append('specializations', specialization);
+      });
+    }
+
+    if (years && years.length > 0) {
+      years.forEach((year) => {
+        params = params.append('years', year);
+      });
+    }
+
+    if (page) {
+      params = params.append('page', page);
+    }
+
+    if (limit) {
+      params = params.append('limit', limit);
+    }
+    return this.http.get<any>(
+      `
+    http://localhost:3000/templates/student-responses/with-user-details/all`,
+      {params},
+    );
   }
 
   public getStudentResponses(studentId: number) {

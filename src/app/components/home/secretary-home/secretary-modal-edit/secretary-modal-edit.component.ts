@@ -7,16 +7,16 @@ import {
 } from '@angular/forms';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgForOf, NgIf, TitleCasePipe} from '@angular/common';
 
 @Component({
-  selector: 'app-student-response-modal-edit',
+  selector: 'app-secretary-modal-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './student-response-modal-edit.component.html',
-  styleUrl: './student-response-modal-edit.component.scss',
+  imports: [ReactiveFormsModule, CommonModule],
+  templateUrl: './secretary-modal-edit.component.html',
+  styleUrl: './secretary-modal-edit.component.scss',
 })
-export class StudentResponseModalEditComponent implements OnInit {
+export class SecretaryModalEditComponent implements OnInit {
   public studentResponses: any = [];
   public studentResponse: any = null;
   public templateFields: any = [];
@@ -26,10 +26,12 @@ export class StudentResponseModalEditComponent implements OnInit {
 
   ngOnInit() {
     this.templateService
-      .getStudentResponsesSource()
+      .getAllStudentsResponses()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        this.studentResponses = value;
+        if (value) {
+          this.studentResponses = value;
+        }
       });
 
     this.templateService
@@ -95,14 +97,16 @@ export class StudentResponseModalEditComponent implements OnInit {
               (studentResponse: any) =>
                 studentResponse.id === data.id ? data : studentResponse,
             );
-            this.templateService.setStudentResponsesSource(
+            this.templateService.setAllStudentsResponsesSource(
               updatedStudentResponses,
             );
             this.closeModal();
           },
           (error) => {
             console.error('Error editing student response', error);
-            this.templateService.setTemplatesSource(this.studentResponses);
+            this.templateService.setAllStudentsResponsesSource(
+              this.studentResponses,
+            );
             this.closeModal();
           },
         );

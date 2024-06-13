@@ -1,4 +1,10 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {TemplateService} from '../../../services/template.service';
 import {CommonModule} from '@angular/common';
 import {Specialization} from '../../../enums/specialization.enum';
@@ -33,7 +39,7 @@ import {ModalEditComponent} from './modal-edit/modal-edit.component';
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss',
 })
-export class AdminHomeComponent implements OnInit {
+export class AdminHomeComponent implements OnInit, AfterViewInit {
   public specializations = Object.values(Specialization);
   public form: FormGroup = new FormGroup({
     specializations: new FormArray([]),
@@ -52,6 +58,26 @@ export class AdminHomeComponent implements OnInit {
       .subscribe((value) => {
         this.templates = value;
       });
+  }
+
+  ngAfterViewInit(): void {
+    this.initializeDropdowns();
+  }
+
+  private initializeDropdowns() {
+    const dropdownDefaultCheckbox = document.getElementById(
+      'dropdownDefaultCheckbox',
+    );
+
+    const dropdownCheckboxButton = document.getElementById(
+      'dropdownCheckboxButton',
+    );
+
+    if (dropdownDefaultCheckbox && dropdownCheckboxButton) {
+      dropdownCheckboxButton.addEventListener('click', () => {
+        dropdownDefaultCheckbox.classList.toggle('hidden');
+      });
+    }
   }
 
   public downloadTemplate(template: string) {
@@ -134,5 +160,9 @@ export class AdminHomeComponent implements OnInit {
 
   public openEditTemplateModal(id: number) {
     this.templateService.setEditModal(id);
+  }
+
+  public openAddTemplateModal() {
+    this.templateService.setAddModal(true);
   }
 }

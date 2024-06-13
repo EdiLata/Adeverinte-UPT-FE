@@ -24,15 +24,26 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public isSecretary = false;
   public userEmail = '';
   private readonly authService = inject(AuthenticationService);
+  private logoutInterval: any;
 
   ngOnInit() {
     this.isSecretary = this.authService.isSecretary();
     this.isStudent = this.authService.isStudent();
     this.isAdmin = this.authService.isAdmin();
     this.userEmail = this.authService.getUserEmail();
+    this.logoutInterval = setInterval(
+      () => {
+        this.logout();
+      },
+      30 * 60 * 1000,
+    );
   }
 
   public logout() {
+    if (this.logoutInterval) {
+      clearInterval(this.logoutInterval);
+      this.logoutInterval = null;
+    }
     this.authService.logout();
   }
 

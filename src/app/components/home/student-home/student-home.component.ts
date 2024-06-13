@@ -1,4 +1,10 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ModalViewComponent} from '../admin-home/modal-view/modal-view.component';
 import {TemplateService} from '../../../services/template.service';
@@ -10,6 +16,15 @@ import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {StudentResponseModalAddComponent} from './student-response-modal-add/student-response-modal-add.component';
 import {StudentResponseModalDeleteComponent} from './student-response-modal-delete/student-response-modal-delete.component';
 import {StudentResponseModalEditComponent} from './student-response-modal-edit/student-response-modal-edit.component';
+import {
+  catchError,
+  map,
+  merge,
+  Observable,
+  of,
+  startWith,
+  switchMap,
+} from 'rxjs';
 
 @Component({
   selector: 'app-student-home',
@@ -29,7 +44,6 @@ import {StudentResponseModalEditComponent} from './student-response-modal-edit/s
 })
 export class StudentHomeComponent implements OnInit {
   public studentResponses: any = [];
-  public searchedStudentResponses: any = [];
   public searchForm: FormGroup = new FormGroup({
     searchQuery: new FormControl(''),
   });
@@ -40,25 +54,16 @@ export class StudentHomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.getStudentResponses(this.authService.getUserId());
+
     this.templateService
       .getStudentResponsesSource()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        this.studentResponses = value;
-      });
-
-    this.searchForm
-      .get('searchQuery')
-      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => {
-        this.studentResponses = this.searchedStudentResponses?.filter(
-          (element: any) =>
-            element?.template?.name
-              ?.toLowerCase()
-              .includes(value?.toLowerCase()),
+        this.studentResponses = value?.filter((element: any) =>
+          element?.template?.name
+            ?.toLowerCase()
+            .includes(this.searchForm.get('searchQuery')?.value?.toLowerCase()),
         );
-
-        this.templateService.setStudentResponsesSource(this.studentResponses);
       });
   }
 
@@ -86,19 +91,44 @@ export class StudentHomeComponent implements OnInit {
   }
 
   private getStudentResponses(studentId: number) {
-    this.templateService
+    const searchQuery$ = this.searchForm
+      .get('searchQuery')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef));
+
+    const studentResponses$ = this.templateService
       .getStudentResponses(studentId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(
-        (data) => {
-          this.templateService.setStudentResponsesSource(data);
-          this.searchedStudentResponses = data;
-        },
-        (error) => {
-          console.error('Error fetching student responses', error);
-          this.templateService.setStudentResponsesSource(null);
-        },
+      .pipe(takeUntilDestroyed(this.destroyRef));
+
+    merge(
+      (searchQuery$ as Observable<any>).pipe(
+        switchMap((searchQuery) =>
+          this.templateService.getStudentResponses(studentId).pipe(
+            catchError((error) => {
+              console.error('Error fetching student responses', error);
+              return of(null);
+            }),
+            map((studentResponses) => ({searchQuery, studentResponses})),
+          ),
+        ),
+      ),
+      studentResponses$.pipe(
+        switchMap((studentResponses) =>
+          (searchQuery$ as Observable<any>).pipe(
+            startWith(''),
+            map((searchQuery) => ({searchQuery, studentResponses})),
+          ),
+        ),
+      ),
+    ).subscribe(({searchQuery, studentResponses}) => {
+      console.log(studentResponses);
+      const searchedResponses = studentResponses?.filter((element: any) =>
+        element?.template?.name
+          ?.toLowerCase()
+          .includes(searchQuery?.toLowerCase()),
       );
+
+      this.templateService.setStudentResponsesSource(searchedResponses);
+    });
   }
 
   public loadDocument(filePath: string): void {
@@ -120,5 +150,9 @@ export class StudentHomeComponent implements OnInit {
 
   public openEditStudentResponseModal(id: number) {
     this.templateService.setEditModal(id);
+  }
+
+  public openAddStudentResponseModal() {
+    this.templateService.setAddModal(true);
   }
 }

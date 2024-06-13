@@ -33,6 +33,17 @@ export class ModalAddComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
+    this.templateService
+      .getAddModal()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value) {
+          this.openModal();
+        } else {
+          this.closeModal();
+        }
+      });
+
     this.initSpecializations();
     this.templateService
       .getTemplatesSource()
@@ -115,6 +126,20 @@ export class ModalAddComponent implements OnInit {
             this.templateService.setTemplatesSource(this.templates);
           },
         );
+    }
+  }
+
+  public openModal() {
+    const modal = document.getElementById('add-modal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+
+  public closeModal() {
+    const modal = document.getElementById('add-modal');
+    if (modal) {
+      modal.style.display = 'none';
     }
   }
 }

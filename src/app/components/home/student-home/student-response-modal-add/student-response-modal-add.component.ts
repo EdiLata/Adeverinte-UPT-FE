@@ -24,11 +24,22 @@ export class StudentResponseModalAddComponent implements OnInit {
   public templateTypes: any = [];
   public templateFields: any = [];
   public templateTypeControl = new FormControl('');
+  public dynamicForm: FormGroup = new FormGroup({});
   private readonly templateService = inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
-  public dynamicForm: FormGroup = new FormGroup({});
 
   ngOnInit() {
+    this.templateService
+      .getAddModal()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value) {
+          this.openModal();
+        } else {
+          this.closeModal();
+        }
+      });
+
     this.templateTypeControl.valueChanges.subscribe((value) => {
       this.templateId = Number(value);
       this.templateService
@@ -93,10 +104,12 @@ export class StudentResponseModalAddComponent implements OnInit {
             this.templateService.setStudentResponsesSource(
               this.studentResponses.concat(data),
             );
+            this.closeModal();
           },
           (error) => {
             console.error('Error filling template', error);
             this.templateService.setTemplatesSource(this.studentResponses);
+            this.closeModal();
           },
         );
       this.dynamicForm.reset();
@@ -110,5 +123,19 @@ export class StudentResponseModalAddComponent implements OnInit {
       this.dynamicForm.valid &&
       Object.keys(this.dynamicForm.controls).length > 0
     );
+  }
+
+  public openModal() {
+    const modal = document.getElementById('student-response-add-modal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+
+  public closeModal() {
+    const modal = document.getElementById('student-response-add-modal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
   }
 }
