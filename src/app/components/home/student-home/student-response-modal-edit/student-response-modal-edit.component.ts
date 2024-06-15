@@ -21,6 +21,7 @@ export class StudentResponseModalEditComponent implements OnInit {
   public studentResponse: any = null;
   public templateFields: any = [];
   public dynamicForm: FormGroup = new FormGroup({});
+  private hasMotivInResponse = false;
   private readonly destroyRef = inject(DestroyRef);
   private readonly templateService = inject(TemplateService);
 
@@ -44,7 +45,16 @@ export class StudentResponseModalEditComponent implements OnInit {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((data) => {
               this.studentResponse = data;
-              this.updateForm(this.studentResponse.responses);
+              if (this.studentResponse.responses.motiv) {
+                this.hasMotivInResponse = true;
+                this.updateForm(this.studentResponse.responses);
+              } else {
+                this.hasMotivInResponse = false;
+                this.updateForm({
+                  ...this.studentResponse.responses,
+                  motiv: this.studentResponse.reason,
+                });
+              }
             });
           this.openModal();
         } else {
@@ -79,10 +89,13 @@ export class StudentResponseModalEditComponent implements OnInit {
 
   public onSubmit(): void {
     if (this.dynamicForm?.valid) {
-      const formValues = this.dynamicForm.value;
+      const {motiv, ...formValueWithoutMotiv} = this.dynamicForm.value;
 
       let editedStudentResponse = {
-        responses: formValues,
+        responses: this.hasMotivInResponse
+          ? {motiv, ...formValueWithoutMotiv}
+          : formValueWithoutMotiv,
+        reason: motiv,
       };
 
       this.templateService

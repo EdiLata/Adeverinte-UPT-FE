@@ -57,6 +57,7 @@
         <th scope="col" class="px-6 py-3">Tip Adeverință</th>
         <th scope="col" class="px-6 py-3">Data Emiterii Cererii</th>
         <th scope="col" class="px-6 py-3">Status</th>
+        <th scope="col" class="px-6 py-3">Motiv Eliberare</th>
         <th scope="col" class="px-6 py-3 text-center">Acțiuni</th>
       </tr>
     </thead>
@@ -76,6 +77,9 @@
         </td>
         <td class="px-6 py-4">
           {{ studentResponse?.status | titlecase }}
+        </td>
+        <td class="px-6 py-4">
+          {{ studentResponse?.reason }}
         </td>
         <td class="px-6 py-4 flex gap-8 items-center justify-between">
           <button

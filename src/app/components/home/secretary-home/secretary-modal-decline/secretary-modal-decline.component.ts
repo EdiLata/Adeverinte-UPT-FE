@@ -1,15 +1,16 @@
 import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ResponseStatus} from '../../../../enums/response-status.enum';
 
 @Component({
-  selector: 'app-secretary-modal-delete',
+  selector: 'app-secretary-modal-decline',
   standalone: true,
   imports: [],
-  templateUrl: './secretary-modal-delete.component.html',
-  styleUrl: './secretary-modal-delete.component.scss',
+  templateUrl: './secretary-modal-decline.component.html',
+  styleUrl: './secretary-modal-decline.component.scss',
 })
-export class SecretaryModalDeleteComponent implements OnInit {
+export class SecretaryModalDeclineComponent implements OnInit {
   public studentResponseId: number | null = null;
   public studentResponses: any = [];
   private totalItems = 10;
@@ -26,7 +27,7 @@ export class SecretaryModalDeleteComponent implements OnInit {
       });
 
     this.templateService
-      .getDeleteModal()
+      .getDeclineModal()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.studentResponseId = value;
@@ -39,37 +40,40 @@ export class SecretaryModalDeleteComponent implements OnInit {
   }
 
   public openModal() {
-    const modal = document.getElementById('student-response-delete-modal');
+    const modal = document.getElementById('student-response-decline-modal');
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('student-response-delete-modal');
+    const modal = document.getElementById('student-response-decline-modal');
     if (modal) {
       modal.style.display = 'none';
     }
   }
 
-  public deleteStudentResponse(id: number | null) {
+  public declineStudentResponse(id: number | null) {
     if (id) {
       this.templateService
-        .deleteStudentResponse(id)
+        .updateStudentResponseStatus(id, {
+          status: ResponseStatus.DECLINED,
+        })
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           () => {
-            const studentResponsesAfterRemoval = this.studentResponses?.filter(
+            const studentResponsesAfterDecline = this.studentResponses?.filter(
               (item: any) => item.id !== id,
             );
+
             this.templateService.setAllStudentsResponsesSource({
-              items: studentResponsesAfterRemoval,
+              items: studentResponsesAfterDecline,
               totalItems: this.totalItems - 1,
             });
             this.closeModal();
           },
           (error) => {
-            console.error('Error deleting student response', error);
+            console.error('Error declining student response', error);
             this.templateService.setAllStudentsResponsesSource({
               items: this.studentResponses,
               totalItems: this.totalItems,

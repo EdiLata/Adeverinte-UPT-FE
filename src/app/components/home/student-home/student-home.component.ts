@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  DestroyRef,
-  inject,
-  OnInit,
-} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ModalViewComponent} from '../admin-home/modal-view/modal-view.component';
 import {TemplateService} from '../../../services/template.service';
@@ -120,7 +114,6 @@ export class StudentHomeComponent implements OnInit {
         ),
       ),
     ).subscribe(({searchQuery, studentResponses}) => {
-      console.log(studentResponses);
       const searchedResponses = studentResponses?.filter((element: any) =>
         element?.template?.name
           ?.toLowerCase()

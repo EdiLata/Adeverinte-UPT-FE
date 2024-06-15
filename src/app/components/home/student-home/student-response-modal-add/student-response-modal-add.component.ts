@@ -25,6 +25,7 @@ export class StudentResponseModalAddComponent implements OnInit {
   public templateFields: any = [];
   public templateTypeControl = new FormControl('');
   public dynamicForm: FormGroup = new FormGroup({});
+  private hasMotivInResponse = false;
   private readonly templateService = inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -49,6 +50,13 @@ export class StudentResponseModalAddComponent implements OnInit {
             return templateField.fieldName;
           });
 
+          if (!this.templateFields.includes('motiv')) {
+            this.templateFields.push('motiv');
+            this.hasMotivInResponse = false;
+          } else {
+            this.hasMotivInResponse = true;
+          }
+
           this.dynamicForm = new FormGroup({});
 
           this.templateFields.forEach((field: any) => {
@@ -69,30 +77,33 @@ export class StudentResponseModalAddComponent implements OnInit {
         this.studentSpecialization = value?.[0]?.student.specialization;
         if (this.studentSpecialization) {
           this.studentSpecialization = [this.studentSpecialization];
-        }
 
-        this.templateService
-          .getTemplates(this.studentSpecialization)
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe((data) => {
-            this.templateTypes = data?.map((item: any) => {
-              return {
-                name: item.name,
-                id: item.id,
-              };
+          this.templateService
+            .getTemplates(this.studentSpecialization)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((data) => {
+              this.templateTypes = data?.map((item: any) => {
+                return {
+                  name: item.name,
+                  id: item.id,
+                };
+              });
             });
-          });
+        }
       });
   }
 
   public onSubmit() {
     if (this.dynamicForm?.valid) {
-      const formValues = this.dynamicForm.value;
+      const {motiv, ...formValueWithoutMotiv} = this.dynamicForm.value;
 
       let filledTemplate = {
         templateId: this.templateId,
         studentId: this.studentId,
-        responses: formValues,
+        responses: this.hasMotivInResponse
+          ? {motiv, ...formValueWithoutMotiv}
+          : formValueWithoutMotiv,
+        reason: motiv,
       };
 
       this.templateService

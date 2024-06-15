@@ -12,8 +12,6 @@ import {HttpClientModule} from '@angular/common/http';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  title = 'adeverinte-UPT-FE';
-
   ngOnInit(): void {
     initFlowbite();
   }

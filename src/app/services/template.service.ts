@@ -20,6 +20,33 @@ export class TemplateService {
   private viewModalContentSource = new BehaviorSubject<SafeHtml | null>(null);
   private deleteModalSource = new BehaviorSubject<number | null>(null);
   private editModalSource = new BehaviorSubject<number | null>(null);
+  public approveModalSource = new BehaviorSubject<number | null>(null);
+  public declineModalSource = new BehaviorSubject<number | null>(null);
+  public redoModalSource = new BehaviorSubject<number | null>(null);
+
+  public setApproveModal(id: number): void {
+    this.approveModalSource.next(id);
+  }
+
+  public getApproveModal() {
+    return this.approveModalSource.asObservable();
+  }
+
+  public setDeclineModal(id: number): void {
+    this.declineModalSource.next(id);
+  }
+
+  public getDeclineModal() {
+    return this.declineModalSource.asObservable();
+  }
+
+  public setRedoModal(id: number): void {
+    this.redoModalSource.next(id);
+  }
+
+  public getRedoModal() {
+    return this.redoModalSource.asObservable();
+  }
 
   public setAllStudentsResponsesSource(responses: any): void {
     this.allStudentsResponsesSource.next(responses);
@@ -190,6 +217,13 @@ export class TemplateService {
   public editStudentResponse(studentResponseId: number, formData: any) {
     return this.http.put<any>(
       `http://localhost:3000/templates/student-responses/${studentResponseId}`,
+      formData,
+    );
+  }
+
+  public updateStudentResponseStatus(studentResponseId: number, formData: any) {
+    return this.http.patch<any>(
+      `http://localhost:3000/templates/${studentResponseId}/status`,
       formData,
     );
   }

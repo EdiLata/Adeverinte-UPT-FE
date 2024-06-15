@@ -21,17 +21,19 @@ export class SecretaryModalEditComponent implements OnInit {
   public studentResponse: any = null;
   public templateFields: any = [];
   public dynamicForm: FormGroup = new FormGroup({});
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly templateService = inject(TemplateService);
+  private hasMotivInResponse = false;
+  private totalItems = 10;
+  private destroyRef = inject(DestroyRef);
+  private templateService = inject(TemplateService);
 
   ngOnInit() {
     this.templateService
-      .getAllStudentsResponses()
+      .getAllStudentsResponsesSource()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        if (value) {
-          this.studentResponses = value;
-        }
+        console.log(value);
+        this.studentResponses = value?.items;
+        this.totalItems = value?.totalItems;
       });
 
     this.templateService
@@ -46,7 +48,16 @@ export class SecretaryModalEditComponent implements OnInit {
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((data) => {
               this.studentResponse = data;
-              this.updateForm(this.studentResponse.responses);
+              if (this.studentResponse.responses.motiv) {
+                this.hasMotivInResponse = true;
+                this.updateForm(this.studentResponse.responses);
+              } else {
+                this.hasMotivInResponse = false;
+                this.updateForm({
+                  ...this.studentResponse.responses,
+                  motiv: this.studentResponse.reason,
+                });
+              }
             });
           this.openModal();
         } else {
@@ -81,10 +92,13 @@ export class SecretaryModalEditComponent implements OnInit {
 
   public onSubmit(): void {
     if (this.dynamicForm?.valid) {
-      const formValues = this.dynamicForm.value;
+      const {motiv, ...formValueWithoutMotiv} = this.dynamicForm.value;
 
       let editedStudentResponse = {
-        responses: formValues,
+        responses: this.hasMotivInResponse
+          ? {motiv, ...formValueWithoutMotiv}
+          : formValueWithoutMotiv,
+        reason: motiv,
       };
 
       this.templateService
@@ -92,21 +106,23 @@ export class SecretaryModalEditComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           (data) => {
-            console.log(data);
             const updatedStudentResponses = this.studentResponses.map(
               (studentResponse: any) =>
                 studentResponse.id === data.id ? data : studentResponse,
             );
-            this.templateService.setAllStudentsResponsesSource(
-              updatedStudentResponses,
-            );
+
+            this.templateService.setAllStudentsResponsesSource({
+              items: updatedStudentResponses,
+              totalItems: this.totalItems,
+            });
             this.closeModal();
           },
           (error) => {
             console.error('Error editing student response', error);
-            this.templateService.setAllStudentsResponsesSource(
-              this.studentResponses,
-            );
+            this.templateService.setAllStudentsResponsesSource({
+              items: this.studentResponses,
+              totalItems: this.totalItems,
+            });
             this.closeModal();
           },
         );
