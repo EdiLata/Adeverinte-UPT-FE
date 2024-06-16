@@ -11,28 +11,42 @@ import {CommonModule} from '@angular/common';
 import {Specialization} from '../../../../enums/specialization.enum';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ToastService} from '../../../../services/toast.service';
 
 @Component({
-  selector: 'app-modal-add',
+  selector: 'app-admin-modal-add',
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, CommonModule],
-  templateUrl: './modal-add.component.html',
-  styleUrl: './modal-add.component.scss',
+  templateUrl: './admin-modal-add.component.html',
+  styleUrl: './admin-modal-add.component.scss',
 })
-export class ModalAddComponent implements OnInit {
+export class AdminModalAddComponent implements OnInit {
   public specializations = Object.values(Specialization);
   public fileError: string | null = null;
+  public specializationsError: string | null = null;
   public modalForm: FormGroup = new FormGroup({
-    name: new FormControl(''),
-    modalSpecializations: new FormArray([]),
-    templateFile: new FormControl(null),
-    dynamicInputs: new FormArray([]),
+    name: new FormControl('', Validators.required),
+    modalSpecializations: new FormArray([], Validators.required),
+    templateFile: new FormControl(null, Validators.required),
+    dynamicInputs: new FormArray([], Validators.required),
   });
   public templates: any = [];
   private readonly templateService = inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
+    this.modalForm.controls['modalSpecializations'].valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value.every((element: boolean) => !element)) {
+          this.specializationsError =
+            'Trebuie să selectezi minim o specializare.';
+        } else {
+          this.specializationsError = null;
+        }
+      });
+
     this.templateService
       .getAddModal()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -56,7 +70,7 @@ export class ModalAddComponent implements OnInit {
   private initSpecializations() {
     this.specializations.forEach(() => {
       (this.modalForm.controls['modalSpecializations'] as FormArray).push(
-        new FormControl(false),
+        new FormControl(false, Validators.required),
       );
     });
   }
@@ -116,28 +130,30 @@ export class ModalAddComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           (data) => {
-            console.log(data);
             this.templateService.setTemplatesSource(
               this.templates.concat(data),
             );
+            this.toasterService.showSuccess('Template adăugat cu succes!');
+            this.closeModal();
           },
-          (error) => {
-            console.error('Error uploading template', error);
+          () => {
+            this.toasterService.showError('Template-ul nu a putut fi adăugat!');
             this.templateService.setTemplatesSource(this.templates);
+            this.closeModal();
           },
         );
     }
   }
 
   public openModal() {
-    const modal = document.getElementById('add-modal');
+    const modal = document.getElementById('admin-add-modal');
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('add-modal');
+    const modal = document.getElementById('admin-add-modal');
     if (modal) {
       modal.style.display = 'none';
     }

@@ -8,6 +8,8 @@ import {
   Validators,
 } from '@angular/forms';
 import {CommonModule} from '@angular/common';
+import {ToastService} from '../../../../services/toast.service';
+import {AuthenticationService} from '../../../../services/authentication.service';
 
 @Component({
   selector: 'app-student-response-modal-add',
@@ -17,9 +19,7 @@ import {CommonModule} from '@angular/common';
   styleUrl: './student-response-modal-add.component.scss',
 })
 export class StudentResponseModalAddComponent implements OnInit {
-  public studentSpecialization: any = null;
   public studentResponses: any = [];
-  public studentId: number | null = null;
   public templateId: number | null = null;
   public templateTypes: any = [];
   public templateFields: any = [];
@@ -28,6 +28,8 @@ export class StudentResponseModalAddComponent implements OnInit {
   private hasMotivInResponse = false;
   private readonly templateService = inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toasterService = inject(ToastService);
+  private readonly authService = inject(AuthenticationService);
 
   ngOnInit() {
     this.templateService
@@ -73,24 +75,26 @@ export class StudentResponseModalAddComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         this.studentResponses = value;
-        this.studentId = value?.[0]?.student.id;
-        this.studentSpecialization = value?.[0]?.student.specialization;
-        if (this.studentSpecialization) {
-          this.studentSpecialization = [this.studentSpecialization];
-
-          this.templateService
-            .getTemplates(this.studentSpecialization)
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((data) => {
-              this.templateTypes = data?.map((item: any) => {
-                return {
-                  name: item.name,
-                  id: item.id,
-                };
-              });
-            });
-        }
       });
+
+    this.templateService
+      .getTemplates(this.authService.getUserSpecialization())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(
+        (data) => {
+          this.templateTypes = data?.map((item: any) => {
+            return {
+              name: item.name,
+              id: item.id,
+            };
+          });
+        },
+        () => {
+          this.toasterService.showError(
+            'Eroare la generarea tipurilor de template!',
+          );
+        },
+      );
   }
 
   public onSubmit() {
@@ -99,7 +103,7 @@ export class StudentResponseModalAddComponent implements OnInit {
 
       let filledTemplate = {
         templateId: this.templateId,
-        studentId: this.studentId,
+        studentId: this.authService.getUserId(),
         responses: this.hasMotivInResponse
           ? {motiv, ...formValueWithoutMotiv}
           : formValueWithoutMotiv,
@@ -111,21 +115,19 @@ export class StudentResponseModalAddComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           (data) => {
-            console.log(data);
             this.templateService.setStudentResponsesSource(
               this.studentResponses.concat(data),
             );
+            this.toasterService.showSuccess('Adeverință completată cu succes!');
             this.closeModal();
           },
-          (error) => {
-            console.error('Error filling template', error);
+          () => {
+            this.toasterService.showError('Eroare la completarea adeverinței!');
             this.templateService.setTemplatesSource(this.studentResponses);
             this.closeModal();
           },
         );
       this.dynamicForm.reset();
-    } else {
-      console.log('Form is invalid');
     }
   }
 

@@ -1,8 +1,7 @@
 import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ModalViewComponent} from '../admin-home/modal-view/modal-view.component';
+import {ModalViewComponent} from '../shared/modal-view/modal-view.component';
 import {TemplateService} from '../../../services/template.service';
-import {NgxDocViewerModule} from 'ngx-doc-viewer';
 import {DomSanitizer} from '@angular/platform-browser';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {AuthenticationService} from '../../../services/authentication.service';
@@ -19,20 +18,19 @@ import {
   startWith,
   switchMap,
 } from 'rxjs';
+import {ToastService} from '../../../services/toast.service';
 
 @Component({
   selector: 'app-student-home',
   standalone: true,
   imports: [
     CommonModule,
-    NgxDocViewerModule,
     ModalViewComponent,
     ReactiveFormsModule,
     StudentResponseModalAddComponent,
     StudentResponseModalDeleteComponent,
     StudentResponseModalEditComponent,
   ],
-  providers: [TemplateService, AuthenticationService],
   templateUrl: './student-home.component.html',
   styleUrl: './student-home.component.scss',
 })
@@ -45,6 +43,7 @@ export class StudentHomeComponent implements OnInit {
   private readonly templateService = inject(TemplateService);
   private readonly authService = inject(AuthenticationService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit(): void {
     this.getStudentResponses(this.authService.getUserId());
@@ -78,8 +77,8 @@ export class StudentHomeComponent implements OnInit {
           window.URL.revokeObjectURL(url);
           document.body.removeChild(a);
         },
-        (error) => {
-          console.error('Error downloading the file', error);
+        () => {
+          this.toasterService.showError('Eroare la descărcarea fișierului!');
         },
       );
   }
@@ -97,8 +96,10 @@ export class StudentHomeComponent implements OnInit {
       (searchQuery$ as Observable<any>).pipe(
         switchMap((searchQuery) =>
           this.templateService.getStudentResponses(studentId).pipe(
-            catchError((error) => {
-              console.error('Error fetching student responses', error);
+            catchError(() => {
+              this.toasterService.showError(
+                'Eroare la afișarea adeverințelor!',
+              );
               return of(null);
             }),
             map((studentResponses) => ({searchQuery, studentResponses})),
@@ -129,12 +130,17 @@ export class StudentHomeComponent implements OnInit {
     this.templateService
       .getFileUrl(parts[1])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((response) => {
-        const safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(
-          response.html,
-        );
-        this.templateService.setViewModalContent(safeHtmlContent);
-      });
+      .subscribe(
+        (response) => {
+          const safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(
+            response.html,
+          );
+          this.templateService.setViewModalContent(safeHtmlContent);
+        },
+        () => {
+          this.toasterService.showError('Eroare la vizualizarea adeverinței!');
+        },
+      );
   }
 
   public openDeleteStudentResponseModal(id: number) {

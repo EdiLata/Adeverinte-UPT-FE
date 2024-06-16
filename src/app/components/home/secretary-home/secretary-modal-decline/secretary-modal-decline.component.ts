@@ -2,6 +2,7 @@ import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ResponseStatus} from '../../../../enums/response-status.enum';
+import {ToastService} from '../../../../services/toast.service';
 
 @Component({
   selector: 'app-secretary-modal-decline',
@@ -16,6 +17,7 @@ export class SecretaryModalDeclineComponent implements OnInit {
   private totalItems = 10;
   private readonly destroyRef = inject(DestroyRef);
   private readonly templateService = inject(TemplateService);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
     this.templateService
@@ -70,10 +72,13 @@ export class SecretaryModalDeclineComponent implements OnInit {
               items: studentResponsesAfterDecline,
               totalItems: this.totalItems - 1,
             });
+            this.toasterService.showSuccess('Adeverință respinsă cu succes!');
             this.closeModal();
           },
-          (error) => {
-            console.error('Error declining student response', error);
+          () => {
+            this.toasterService.showError(
+              'Adeverința nu au putut fi respinsă!',
+            );
             this.templateService.setAllStudentsResponsesSource({
               items: this.studentResponses,
               totalItems: this.totalItems,

@@ -8,6 +8,7 @@ import {
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {CommonModule} from '@angular/common';
+import {ToastService} from '../../../../services/toast.service';
 
 @Component({
   selector: 'app-student-response-modal-edit',
@@ -24,6 +25,7 @@ export class StudentResponseModalEditComponent implements OnInit {
   private hasMotivInResponse = false;
   private readonly destroyRef = inject(DestroyRef);
   private readonly templateService = inject(TemplateService);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
     this.templateService
@@ -103,7 +105,6 @@ export class StudentResponseModalEditComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           (data) => {
-            console.log(data);
             const updatedStudentResponses = this.studentResponses.map(
               (studentResponse: any) =>
                 studentResponse.id === data.id ? data : studentResponse,
@@ -111,17 +112,16 @@ export class StudentResponseModalEditComponent implements OnInit {
             this.templateService.setStudentResponsesSource(
               updatedStudentResponses,
             );
+            this.toasterService.showSuccess('Adeverință editată cu succes!');
             this.closeModal();
           },
-          (error) => {
-            console.error('Error editing student response', error);
+          () => {
+            this.toasterService.showError('Eroare la editarea adeverinței!');
             this.templateService.setTemplatesSource(this.studentResponses);
             this.closeModal();
           },
         );
       this.dynamicForm.reset();
-    } else {
-      console.log('Form is invalid');
     }
   }
 

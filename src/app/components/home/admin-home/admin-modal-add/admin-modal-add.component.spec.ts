@@ -1,17 +1,17 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ModalAddComponent} from './modal-add.component';
+import {AdminModalAddComponent} from './admin-modal-add.component';
 
 describe('ModalComponent', () => {
-  let component: ModalAddComponent;
-  let fixture: ComponentFixture<ModalAddComponent>;
+  let component: AdminModalAddComponent;
+  let fixture: ComponentFixture<AdminModalAddComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ModalAddComponent],
+      imports: [AdminModalAddComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ModalAddComponent);
+    fixture = TestBed.createComponent(AdminModalAddComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

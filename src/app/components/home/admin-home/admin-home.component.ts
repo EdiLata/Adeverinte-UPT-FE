@@ -15,13 +15,13 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-import {NgxDocViewerModule} from 'ngx-doc-viewer';
 import {DomSanitizer} from '@angular/platform-browser';
-import {ModalAddComponent} from './modal-add/modal-add.component';
-import {ModalViewComponent} from './modal-view/modal-view.component';
+import {AdminModalAddComponent} from './admin-modal-add/admin-modal-add.component';
+import {ModalViewComponent} from '../shared/modal-view/modal-view.component';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {ModalDeleteComponent} from './modal-delete/modal-delete.component';
-import {ModalEditComponent} from './modal-edit/modal-edit.component';
+import {AdminModalDeleteComponent} from './admin-modal-delete/admin-modal-delete.component';
+import {AdminModalEditComponent} from './admin-modal-edit/admin-modal-edit.component';
+import {ToastService} from '../../../services/toast.service';
 
 @Component({
   selector: 'app-admin-home',
@@ -29,13 +29,11 @@ import {ModalEditComponent} from './modal-edit/modal-edit.component';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ModalAddComponent,
-    NgxDocViewerModule,
+    AdminModalAddComponent,
     ModalViewComponent,
-    ModalDeleteComponent,
-    ModalEditComponent,
+    AdminModalDeleteComponent,
+    AdminModalEditComponent,
   ],
-  providers: [TemplateService],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss',
 })
@@ -48,6 +46,7 @@ export class AdminHomeComponent implements OnInit, AfterViewInit {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly templateService = inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
     this.initSpecializations();
@@ -97,8 +96,8 @@ export class AdminHomeComponent implements OnInit, AfterViewInit {
           window.URL.revokeObjectURL(url);
           document.body.removeChild(a);
         },
-        (error) => {
-          console.error('Error downloading the file', error);
+        () => {
+          this.toasterService.showError('Eroare la descărcarea fișierului!');
         },
       );
   }
@@ -134,8 +133,8 @@ export class AdminHomeComponent implements OnInit, AfterViewInit {
         (data) => {
           this.templateService.setTemplatesSource(data);
         },
-        (error) => {
-          console.error('Error fetching templates', error);
+        () => {
+          this.toasterService.showError('Eroare la afișarea de template-uri!');
           this.templateService.setTemplatesSource(null);
         },
       );
@@ -146,12 +145,19 @@ export class AdminHomeComponent implements OnInit, AfterViewInit {
     this.templateService
       .getFileUrl(parts[1])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((response) => {
-        const safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(
-          response.html,
-        );
-        this.templateService.setViewModalContent(safeHtmlContent);
-      });
+      .subscribe(
+        (response) => {
+          const safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(
+            response.html,
+          );
+          this.templateService.setViewModalContent(safeHtmlContent);
+        },
+        () => {
+          this.toasterService.showError(
+            'Eroare la vizualizarea template-ului!',
+          );
+        },
+      );
   }
 
   public openDeleteTemplateModal(id: number) {

@@ -11,30 +11,44 @@ import {
   Validators,
 } from '@angular/forms';
 import {Specialization} from '../../../../enums/specialization.enum';
+import {ToastService} from '../../../../services/toast.service';
 
 @Component({
-  selector: 'app-modal-edit',
+  selector: 'app-admin-modal-edit',
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, CommonModule],
-  templateUrl: './modal-edit.component.html',
-  styleUrl: './modal-edit.component.scss',
+  templateUrl: './admin-modal-edit.component.html',
+  styleUrl: './admin-modal-edit.component.scss',
 })
-export class ModalEditComponent implements OnInit {
+export class AdminModalEditComponent implements OnInit {
   public specializations = Object.values(Specialization);
   public fileError: string | null = null;
+  public specializationsError: string | null = null;
   public modalForm: FormGroup = new FormGroup({
-    name: new FormControl(''),
-    modalSpecializations: new FormArray([]),
+    name: new FormControl('', Validators.required),
+    modalSpecializations: new FormArray([], Validators.required),
     templateFile: new FormControl(null),
-    dynamicInputs: new FormArray([]),
+    dynamicInputs: new FormArray([], Validators.required),
   });
   public templates: any = [];
   public template: any = null;
   public isTemplateUploadEnabled: boolean = false;
   private readonly destroyRef = inject(DestroyRef);
   private readonly templateService = inject(TemplateService);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
+    this.modalForm.controls['modalSpecializations'].valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value.every((element: boolean) => !element)) {
+          this.specializationsError =
+            'Trebuie să selectezi minim o specializare.';
+        } else {
+          this.specializationsError = null;
+        }
+      });
+
     this.templateService
       .getTemplatesSource()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -64,14 +78,14 @@ export class ModalEditComponent implements OnInit {
   }
 
   public openModal() {
-    const modal = document.getElementById('edit-modal');
+    const modal = document.getElementById('admin-edit-modal');
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('edit-modal');
+    const modal = document.getElementById('admin-edit-modal');
     if (modal) {
       modal.style.display = 'none';
     }
@@ -79,7 +93,7 @@ export class ModalEditComponent implements OnInit {
   private initSpecializations() {
     this.specializations.forEach(() => {
       (this.modalForm.controls['modalSpecializations'] as FormArray).push(
-        new FormControl(false),
+        new FormControl(false, Validators.required),
       );
     });
   }
@@ -148,15 +162,15 @@ export class ModalEditComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           (data) => {
-            console.log(data);
             const updatedTemplates = this.templates.map((template: any) =>
               template.id === data.id ? data : template,
             );
             this.templateService.setTemplatesSource(updatedTemplates);
+            this.toasterService.showSuccess('Template editat cu succes!');
             this.closeModal();
           },
-          (error) => {
-            console.error('Error editing template', error);
+          () => {
+            this.toasterService.showError('Template-ul nu a putut fi editat!');
             this.templateService.setTemplatesSource(this.templates);
             this.closeModal();
           },

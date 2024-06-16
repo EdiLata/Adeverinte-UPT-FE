@@ -1,6 +1,7 @@
 import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ToastService} from '../../../../services/toast.service';
 
 @Component({
   selector: 'app-secretary-modal-delete',
@@ -15,6 +16,7 @@ export class SecretaryModalDeleteComponent implements OnInit {
   private totalItems = 10;
   private readonly destroyRef = inject(DestroyRef);
   private readonly templateService = inject(TemplateService);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
     this.templateService
@@ -66,10 +68,11 @@ export class SecretaryModalDeleteComponent implements OnInit {
               items: studentResponsesAfterRemoval,
               totalItems: this.totalItems - 1,
             });
+            this.toasterService.showSuccess('Adeverință ștearsă cu succes!');
             this.closeModal();
           },
-          (error) => {
-            console.error('Error deleting student response', error);
+          () => {
+            this.toasterService.showError('Adeverința nu au putut fi ștearsă!');
             this.templateService.setAllStudentsResponsesSource({
               items: this.studentResponses,
               totalItems: this.totalItems,

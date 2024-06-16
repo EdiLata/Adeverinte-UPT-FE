@@ -17,12 +17,21 @@ export class TemplateService {
   private allStudentsResponsesSource = new BehaviorSubject<any>(null);
 
   private addModalSource = new BehaviorSubject<boolean>(false);
+  private generateReportModalSource = new BehaviorSubject<boolean>(false);
   private viewModalContentSource = new BehaviorSubject<SafeHtml | null>(null);
   private deleteModalSource = new BehaviorSubject<number | null>(null);
   private editModalSource = new BehaviorSubject<number | null>(null);
-  public approveModalSource = new BehaviorSubject<number | null>(null);
-  public declineModalSource = new BehaviorSubject<number | null>(null);
-  public redoModalSource = new BehaviorSubject<number | null>(null);
+  private approveModalSource = new BehaviorSubject<number | null>(null);
+  private declineModalSource = new BehaviorSubject<number | null>(null);
+  private redoModalSource = new BehaviorSubject<number | null>(null);
+
+  public setGenerateReportModal(isOpened: boolean): void {
+    this.generateReportModalSource.next(isOpened);
+  }
+
+  public getGenerateReportModal() {
+    return this.generateReportModalSource.asObservable();
+  }
 
   public setApproveModal(id: number): void {
     this.approveModalSource.next(id);
@@ -197,7 +206,7 @@ export class TemplateService {
     }
     return this.http.get<any>(
       `
-    http://localhost:3000/templates/student-responses/with-user-details/all`,
+    http://localhost:3000/templates/students-responses/with-user-details/all`,
       {params},
     );
   }
@@ -211,6 +220,21 @@ export class TemplateService {
   public getStudentResponse(studentResponseId: number) {
     return this.http.get<any>(
       `http://localhost:3000/templates/student-responses/${studentResponseId}`,
+    );
+  }
+
+  public getApprovedResponses(dateRange: any) {
+    let params = new HttpParams();
+    for (const key in dateRange) {
+      if (dateRange.hasOwnProperty(key)) {
+        params = params.append(key, dateRange[key]);
+      }
+    }
+
+    return this.http.get<any>(
+      `
+    http://localhost:3000/templates/students-responses/with-user-details/approved`,
+      {params},
     );
   }
 

@@ -8,6 +8,7 @@ import {
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {CommonModule, NgForOf, NgIf, TitleCasePipe} from '@angular/common';
+import {ToastService} from '../../../../services/toast.service';
 
 @Component({
   selector: 'app-secretary-modal-edit',
@@ -23,15 +24,15 @@ export class SecretaryModalEditComponent implements OnInit {
   public dynamicForm: FormGroup = new FormGroup({});
   private hasMotivInResponse = false;
   private totalItems = 10;
-  private destroyRef = inject(DestroyRef);
-  private templateService = inject(TemplateService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly templateService = inject(TemplateService);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
     this.templateService
       .getAllStudentsResponsesSource()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        console.log(value);
         this.studentResponses = value?.items;
         this.totalItems = value?.totalItems;
       });
@@ -115,10 +116,11 @@ export class SecretaryModalEditComponent implements OnInit {
               items: updatedStudentResponses,
               totalItems: this.totalItems,
             });
+            this.toasterService.showSuccess('Adeverință editată cu succes!');
             this.closeModal();
           },
-          (error) => {
-            console.error('Error editing student response', error);
+          () => {
+            this.toasterService.showError('Adeverința nu au putut fi editată!');
             this.templateService.setAllStudentsResponsesSource({
               items: this.studentResponses,
               totalItems: this.totalItems,
@@ -127,8 +129,6 @@ export class SecretaryModalEditComponent implements OnInit {
           },
         );
       this.dynamicForm.reset();
-    } else {
-      console.log('Form is invalid');
     }
   }
 

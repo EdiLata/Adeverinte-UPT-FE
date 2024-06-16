@@ -1,12 +1,12 @@
 <div
-  id="edit-modal"
+  id="admin-add-modal"
   class="overflow-hidden fixed top-0 left-0 z-50 justify-center items-center w-full h-full"
 >
   <div
     id="overlay"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+    class="fixed inset-0 bg-black h-full bg-opacity-50 flex items-center justify-center"
   ></div>
-  <div class="relative p-4 flex justify-center items-center h-full">
+  <div class="relative flex justify-center items-center h-full p-4">
     <div
       class="relative bg-white overflow-auto rounded-lg max-h-[calc(100vh-2rem)] shadow dark:bg-gray-700"
     >
@@ -14,7 +14,7 @@
         class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
       >
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-          Editează Un Tip De Adeverință
+          Adaugă Un Tip Nou De Adeverință
         </h3>
         <button
           type="button"
@@ -57,67 +57,45 @@
             class="block mb-2 mt-4 text-sm font-medium text-gray-900 dark:text-white"
             >Alege specializările ce pot folosi acest tip de adeverință</label
           >
-          <div
-            formArrayName="modalSpecializations"
-            *ngFor="
-              let modalSpecialization of modalSpecializations.controls;
-              let i = index
-            "
-            class="flex items-center"
-          >
-            <input
-              type="checkbox"
-              [formControlName]="i"
-              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-            />
-            <label
-              class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-              >{{ specializations[i] }}</label
+          <div formArrayName="modalSpecializations">
+            <div
+              *ngFor="let modalSpecialization of specializations; let i = index"
+              class="flex items-center"
             >
+              <input
+                type="checkbox"
+                [formControlName]="i"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+              />
+              <label
+                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                >{{ modalSpecialization }}</label
+              >
+            </div>
+          </div>
+          <div *ngIf="specializationsError" class="text-red-600 mt-2">
+            {{ specializationsError }}
           </div>
 
-          <button
-            (click)="toggleTemplateUpload()"
-            *ngIf="!isTemplateUploadEnabled"
-            type="button"
-            class="mt-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Vreau să schimb template-ul adeverinței
-          </button>
           <label
-            *ngIf="isTemplateUploadEnabled"
             class="block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white"
             for="template"
-            >Încarcă noul template</label
+            >Încarcă template</label
           >
-          <div *ngIf="isTemplateUploadEnabled">
-            <div class="flex gap-2 items-center">
-              <input
-                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                aria-describedby="template_help"
-                id="template"
-                type="file"
-                (change)="onFileSelected($event)"
-              />
-
-              <button
-                (click)="toggleTemplateUpload()"
-                type="button"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Înapoi
-              </button>
-            </div>
-            <div
-              class="mt-1 text-sm text-gray-500 dark:text-gray-300"
-              id="template_help"
-            >
-              Template-ul trebuie să fie un document word cu extensia .docx
-            </div>
-            <div *ngIf="fileError" class="text-red-600 mt-2">
-              {{ fileError }}
-            </div>
+          <input
+            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            aria-describedby="template_help"
+            id="template"
+            type="file"
+            (change)="onFileSelected($event)"
+          />
+          <div
+            class="mt-1 text-sm text-gray-500 dark:text-gray-300"
+            id="template_help"
+          >
+            Template-ul trebuie să fie un document word cu extensia .docx
           </div>
+          <div *ngIf="fileError" class="text-red-600 mt-2">{{ fileError }}</div>
 
           <label
             class="block mt-4 text-sm font-medium text-gray-900 dark:text-white"
@@ -189,9 +167,10 @@
         <button
           (click)="onSubmit()"
           [ngClass]="{
-            'bg-gray-200 text-black hover:bg-gray-200': fileError
+            'bg-gray-200 text-black hover:bg-gray-200':
+              fileError || specializationsError || modalForm.invalid,
           }"
-          [disabled]="fileError"
+          [disabled]="fileError || specializationsError || modalForm.invalid"
           type="button"
           class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >

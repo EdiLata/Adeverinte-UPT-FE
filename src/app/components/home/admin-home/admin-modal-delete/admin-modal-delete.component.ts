@@ -1,19 +1,21 @@
 import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ToastService} from '../../../../services/toast.service';
 
 @Component({
-  selector: 'app-modal-delete',
+  selector: 'app-admin-modal-delete',
   standalone: true,
   imports: [],
-  templateUrl: './modal-delete.component.html',
-  styleUrl: './modal-delete.component.scss',
+  templateUrl: './admin-modal-delete.component.html',
+  styleUrl: './admin-modal-delete.component.scss',
 })
-export class ModalDeleteComponent implements OnInit {
+export class AdminModalDeleteComponent implements OnInit {
   public templateId: number | null = null;
   public templates: any = [];
   private readonly destroyRef = inject(DestroyRef);
   private readonly templateService = inject(TemplateService);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
     this.templateService
@@ -37,14 +39,14 @@ export class ModalDeleteComponent implements OnInit {
   }
 
   public openModal() {
-    const modal = document.getElementById('delete-modal');
+    const modal = document.getElementById('admin-delete-modal');
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('delete-modal');
+    const modal = document.getElementById('admin-delete-modal');
     if (modal) {
       modal.style.display = 'none';
     }
@@ -61,10 +63,11 @@ export class ModalDeleteComponent implements OnInit {
               (item: any) => item.id !== id,
             );
             this.templateService.setTemplatesSource(templatesAfterRemoval);
+            this.toasterService.showSuccess('Template șters cu succes!');
             this.closeModal();
           },
-          (error) => {
-            console.error('Error deleting template', error);
+          () => {
+            this.toasterService.showError('Template-ul nu a putut fi șters!');
             this.templateService.setTemplatesSource(this.templates);
             this.closeModal();
           },

@@ -1,6 +1,7 @@
 import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {ToastService} from '../../../../services/toast.service';
 
 @Component({
   selector: 'app-student-response-modal-delete',
@@ -14,6 +15,7 @@ export class StudentResponseModalDeleteComponent implements OnInit {
   public studentResponses: any = [];
   private readonly destroyRef = inject(DestroyRef);
   private readonly templateService = inject(TemplateService);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
     this.templateService
@@ -63,10 +65,11 @@ export class StudentResponseModalDeleteComponent implements OnInit {
             this.templateService.setStudentResponsesSource(
               studentResponsesAfterRemoval,
             );
+            this.toasterService.showSuccess('Adeverință ștearsă cu succes!');
             this.closeModal();
           },
-          (error) => {
-            console.error('Error deleting student response', error);
+          () => {
+            this.toasterService.showError('Eroare la ștergerea adeverinței!');
             this.templateService.setStudentResponsesSource(
               this.studentResponses,
             );

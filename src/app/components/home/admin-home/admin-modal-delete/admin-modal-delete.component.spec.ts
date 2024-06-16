@@ -1,17 +1,17 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ModalDeleteComponent} from './modal-delete.component';
+import {AdminModalDeleteComponent} from './admin-modal-delete.component';
 
 describe('ModalDeleteComponent', () => {
-  let component: ModalDeleteComponent;
-  let fixture: ComponentFixture<ModalDeleteComponent>;
+  let component: AdminModalDeleteComponent;
+  let fixture: ComponentFixture<AdminModalDeleteComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ModalDeleteComponent],
+      imports: [AdminModalDeleteComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ModalDeleteComponent);
+    fixture = TestBed.createComponent(AdminModalDeleteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -18,7 +18,7 @@ import {
 } from '@angular/forms';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {DomSanitizer} from '@angular/platform-browser';
-import {ModalViewComponent} from '../admin-home/modal-view/modal-view.component';
+import {ModalViewComponent} from '../shared/modal-view/modal-view.component';
 import {SecretaryModalDeleteComponent} from './secretary-modal-delete/secretary-modal-delete.component';
 import {
   catchError,
@@ -34,6 +34,8 @@ import {PaginationService} from '../../../services/pagination.service';
 import {SecretaryModalApproveComponent} from './secretary-modal-approve/secretary-modal-approve.component';
 import {SecretaryModalRedoComponent} from './secretary-modal-redo/secretary-modal-redo.component';
 import {SecretaryModalDeclineComponent} from './secretary-modal-decline/secretary-modal-decline.component';
+import {SecretaryModalGenerateReportComponent} from './secretary-modal-generate-report/secretary-modal-generate-report.component';
+import {ToastService} from '../../../services/toast.service';
 
 @Component({
   selector: 'app-secretary-home',
@@ -47,8 +49,8 @@ import {SecretaryModalDeclineComponent} from './secretary-modal-decline/secretar
     SecretaryModalApproveComponent,
     SecretaryModalRedoComponent,
     SecretaryModalDeclineComponent,
+    SecretaryModalGenerateReportComponent,
   ],
-  providers: [TemplateService, PaginationService],
   templateUrl: './secretary-home.component.html',
   styleUrl: './secretary-home.component.scss',
 })
@@ -74,6 +76,7 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
   private readonly templateService = inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly paginationService = inject(PaginationService);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit(): void {
     this.page = this.paginationService.getDefaultPageNumber();
@@ -86,7 +89,6 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
       .getAllStudentsResponsesSource()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        console.log(value);
         this.allStudentsResponses = value?.items?.filter((element: any) =>
           element?.student?.email
             ?.toLowerCase()
@@ -231,8 +233,10 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
               this.limit,
             )
             .pipe(
-              catchError((error) => {
-                console.error('Error fetching student responses', error);
+              catchError(() => {
+                this.toasterService.showError(
+                  'Eroare la afișarea adeverințelor!',
+                );
                 return of(null);
               }),
               map((studentResponses) => ({searchQuery, studentResponses})),
@@ -257,7 +261,6 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
 
       this.totalItems = studentResponses?.totalItems;
 
-      console.log(searchedResponses);
       this.templateService.setAllStudentsResponsesSource({
         items: searchedResponses,
         totalItems: this.totalItems,
@@ -294,8 +297,8 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
           window.URL.revokeObjectURL(url);
           document.body.removeChild(a);
         },
-        (error) => {
-          console.error('Error downloading the file', error);
+        () => {
+          this.toasterService.showError('Eroare la descărcarea fișierului!');
         },
       );
   }
@@ -305,12 +308,17 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
     this.templateService
       .getFileUrl(parts[1])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((response) => {
-        const safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(
-          response.html,
-        );
-        this.templateService.setViewModalContent(safeHtmlContent);
-      });
+      .subscribe(
+        (response) => {
+          const safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(
+            response.html,
+          );
+          this.templateService.setViewModalContent(safeHtmlContent);
+        },
+        () => {
+          this.toasterService.showError('Eroare la vizualizarea adeverinței!');
+        },
+      );
   }
 
   public openDeleteStudentResponseModal(id: number) {
@@ -331,6 +339,10 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
 
   public openRedoStudentResponseModal(id: number) {
     this.templateService.setRedoModal(id);
+  }
+
+  public openGenerateReportModal() {
+    this.templateService.setGenerateReportModal(true);
   }
 
   public printStudentResponse(filePath: string): void {

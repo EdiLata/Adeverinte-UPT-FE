@@ -2,6 +2,7 @@ import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ResponseStatus} from '../../../../enums/response-status.enum';
+import {ToastService} from '../../../../services/toast.service';
 
 @Component({
   selector: 'app-secretary-modal-redo',
@@ -16,6 +17,7 @@ export class SecretaryModalRedoComponent implements OnInit {
   private totalItems = 10;
   private readonly destroyRef = inject(DestroyRef);
   private readonly templateService = inject(TemplateService);
+  private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
     this.templateService
@@ -70,10 +72,15 @@ export class SecretaryModalRedoComponent implements OnInit {
               items: studentResponsesAfterRedoing,
               totalItems: this.totalItems - 1,
             });
+            this.toasterService.showSuccess(
+              'Adeverință retrimisă la reevaluare cu succes!',
+            );
             this.closeModal();
           },
-          (error) => {
-            console.error('Error redoing student response', error);
+          () => {
+            this.toasterService.showError(
+              'Adeverința nu au putut fi trimisă pentru reevaaluare!',
+            );
             this.templateService.setAllStudentsResponsesSource({
               items: this.studentResponses,
               totalItems: this.totalItems,

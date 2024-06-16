@@ -1,26 +1,25 @@
-import {Component, DestroyRef, inject} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {
   FormControl,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import {AuthenticationService} from '../../../services/authentication.service';
 import {Router, RouterModule} from '@angular/router';
 import {confirmPasswordValidator} from '../validators';
-import {NgIf} from '@angular/common';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {CommonModule} from '@angular/common';
+import {ToastService} from '../../../services/toast.service';
 
 @Component({
   selector: 'app-registration',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, RouterModule, NgIf],
-  providers: [AuthenticationService],
+  imports: [ReactiveFormsModule, RouterModule, CommonModule],
   templateUrl: './registration.component.html',
   styleUrl: './registration.component.scss',
 })
-export class RegistrationComponent {
+export class RegistrationComponent implements OnInit {
   public registerForm: FormGroup = new FormGroup(
     {
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -32,6 +31,11 @@ export class RegistrationComponent {
   private readonly authenticationService = inject(AuthenticationService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toasterService = inject(ToastService);
+
+  ngOnInit() {
+    localStorage.removeItem('access_token');
+  }
 
   public registerUser() {
     if (this.registerForm.valid) {
@@ -43,15 +47,15 @@ export class RegistrationComponent {
       this.authenticationService
         .registerUser(user)
         .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: (response) => {
-            console.log('Register successful', response);
+        .subscribe(
+          () => {
+            this.toasterService.showSuccess('Înregistrare cu succes!');
             this.router.navigate(['/login']);
           },
-          error: (error) => {
-            console.error('Register failed', error);
+          () => {
+            this.toasterService.showError('Emailul nu este valid!');
           },
-        });
+        );
     }
   }
 }
