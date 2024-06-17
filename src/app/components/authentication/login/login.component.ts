@@ -18,7 +18,6 @@ export class LoginComponent implements OnInit {
     email: new FormControl(''),
     password: new FormControl(''),
   });
-  public isSessionExpired = false;
   private readonly authenticationService = inject(AuthenticationService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
@@ -26,12 +25,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     localStorage.removeItem('access_token');
-    this.authenticationService
-      .getSessionExpirationSource()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((isExpired) => {
-        this.isSessionExpired = isExpired;
-      });
   }
 
   public loginUser() {
@@ -45,10 +38,8 @@ export class LoginComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (response) => {
-          this.authenticationService.setSessionExpirationSource(false);
           this.toasterService.showSuccess('Logare cu succes!');
           localStorage.setItem('access_token', response.access_token);
-          this.authenticationService.setSessionExpiration(30);
           this.router.navigate(['/home']);
         },
         () => {

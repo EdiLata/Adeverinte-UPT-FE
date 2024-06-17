@@ -1,7 +1,5 @@
 <section class="bg-white dark:bg-gray-900">
-  <div
-    class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"
-  >
+  <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto">
     <a
       routerLink="/authentication/login"
       class="flex flex-col gap-4 md:flex-row items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
@@ -45,6 +43,66 @@
           </div>
           <div>
             <label
+              for="faculty"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Facultate:
+            </label>
+            <select
+              formControlName="faculty"
+              id="faculty"
+              name="faculty"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              <option value="null" selected>Niciuna</option>
+              <option value="{{ faculty }}" *ngFor="let faculty of faculties">
+                {{ faculty }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label
+              for="specialization"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Specializare:
+            </label>
+            <select
+              formControlName="specialization"
+              id="specialization"
+              name="specialization"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              <option value="null" selected>Niciuna</option>
+              <option
+                value="{{ specialization }}"
+                *ngFor="let specialization of specializations"
+              >
+                {{ specialization }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label
+              for="year"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              An:
+            </label>
+            <select
+              formControlName="year"
+              id="year"
+              name="year"
+              class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            >
+              <option value="null" selected>Niciunul</option>
+              <option value="{{ year }}" *ngFor="let year of years">
+                {{ year }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label
               for="password"
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >Parolă</label
@@ -67,7 +125,7 @@
             >
             <input
               formControlName="confirmPassword"
-              type="confirm-password"
+              type="password"
               name="confirm-password"
               id="confirm-password"
               placeholder="••••••••"
