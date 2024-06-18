@@ -33,7 +33,7 @@ export class TemplateService {
     return this.generateReportModalSource.asObservable();
   }
 
-  public setApproveModal(id: number): void {
+  public setApproveModal(id: number | null): void {
     this.approveModalSource.next(id);
   }
 
@@ -41,7 +41,7 @@ export class TemplateService {
     return this.approveModalSource.asObservable();
   }
 
-  public setDeclineModal(id: number): void {
+  public setDeclineModal(id: number | null): void {
     this.declineModalSource.next(id);
   }
 
@@ -49,7 +49,7 @@ export class TemplateService {
     return this.declineModalSource.asObservable();
   }
 
-  public setRedoModal(id: number): void {
+  public setRedoModal(id: number | null): void {
     this.redoModalSource.next(id);
   }
 
@@ -81,7 +81,7 @@ export class TemplateService {
     return this.addModalSource.asObservable();
   }
 
-  public setEditModal(id: number): void {
+  public setEditModal(id: number | null): void {
     this.editModalSource.next(id);
   }
 
@@ -97,7 +97,7 @@ export class TemplateService {
     return this.templatesSource.asObservable();
   }
 
-  public setDeleteModal(id: number): void {
+  public setDeleteModal(id: number | null): void {
     this.deleteModalSource.next(id);
   }
 
@@ -105,7 +105,7 @@ export class TemplateService {
     return this.deleteModalSource.asObservable();
   }
 
-  public setViewModalContent(content: SafeHtml) {
+  public setViewModalContent(content: SafeHtml | null) {
     this.viewModalContentSource.next(content);
   }
 

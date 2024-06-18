@@ -4,6 +4,7 @@ import {AdminHomeComponent} from './admin-home/admin-home.component';
 import {SecretaryHomeComponent} from './secretary-home/secretary-home.component';
 import {StudentHomeComponent} from './student-home/student-home.component';
 import {CommonModule} from '@angular/common';
+import {TemplateService} from '../../services/template.service';
 
 @Component({
   selector: 'app-home',
@@ -22,9 +23,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
   public isStudent = false;
   public isSecretary = false;
   public userEmail = '';
+  private readonly templateService = inject(TemplateService);
   private readonly authService = inject(AuthenticationService);
 
   ngOnInit() {
+    this.templateService.setDeleteModal(null);
+    this.templateService.setEditModal(null);
+    this.templateService.setAddModal(false);
+    this.templateService.setViewModalContent(null);
+    this.templateService.setDeclineModal(null);
+    this.templateService.setRedoModal(null);
+    this.templateService.setApproveModal(null);
+    this.templateService.setGenerateReportModal(false);
     this.isSecretary = this.authService.isSecretary();
     this.isStudent = this.authService.isStudent();
     this.isAdmin = this.authService.isAdmin();
