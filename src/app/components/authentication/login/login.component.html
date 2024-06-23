@@ -11,7 +11,11 @@
         src="assets/images/upt_logo.png"
         alt="logo"
       />
-      <img class="w-auto h-16" src="assets/images/ac_logo.png" alt="logo" />
+      <img
+        class="w-auto h-16"
+        src="assets/images/ac_logo.png"
+        alt="logo"
+      />
     </a>
     <div
       class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
@@ -68,7 +72,8 @@
           </div>
           <button
             [ngClass]="{
-              'bg-gray-200 hover:bg-gray-200': loginForm.invalid,
+              'bg-gray-200 hover:bg-gray-200':
+                loginForm.invalid,
             }"
             [disabled]="loginForm.invalid"
             type="submit"
@@ -76,7 +81,9 @@
           >
             Loghează-te
           </button>
-          <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+          <p
+            class="text-sm font-light text-gray-500 dark:text-gray-400"
+          >
             Nu ai încă un cont?
             <a
               routerLink="/authentication/register"

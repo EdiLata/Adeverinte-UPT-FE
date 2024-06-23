@@ -1,4 +1,9 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ToastService} from '../../../../services/toast.service';
@@ -14,7 +19,8 @@ export class AdminModalDeleteComponent implements OnInit {
   public templateId: number | null = null;
   public templates: any = [];
   private readonly destroyRef = inject(DestroyRef);
-  private readonly templateService = inject(TemplateService);
+  private readonly templateService =
+    inject(TemplateService);
   private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
@@ -39,14 +45,18 @@ export class AdminModalDeleteComponent implements OnInit {
   }
 
   public openModal() {
-    const modal = document.getElementById('admin-delete-modal');
+    const modal = document.getElementById(
+      'admin-delete-modal',
+    );
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('admin-delete-modal');
+    const modal = document.getElementById(
+      'admin-delete-modal',
+    );
     if (modal) {
       modal.style.display = 'none';
     }
@@ -59,16 +69,25 @@ export class AdminModalDeleteComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           () => {
-            const templatesAfterRemoval = this.templates.filter(
-              (item: any) => item.id !== id,
+            const templatesAfterRemoval =
+              this.templates.filter(
+                (item: any) => item.id !== id,
+              );
+            this.templateService.setTemplatesSource(
+              templatesAfterRemoval,
             );
-            this.templateService.setTemplatesSource(templatesAfterRemoval);
-            this.toasterService.showSuccess('Template șters cu succes!');
+            this.toasterService.showSuccess(
+              'Template șters cu succes!',
+            );
             this.closeModal();
           },
           () => {
-            this.toasterService.showError('Template-ul nu a putut fi șters!');
-            this.templateService.setTemplatesSource(this.templates);
+            this.toasterService.showError(
+              'Template-ul nu a putut fi șters!',
+            );
+            this.templateService.setTemplatesSource(
+              this.templates,
+            );
             this.closeModal();
           },
         );

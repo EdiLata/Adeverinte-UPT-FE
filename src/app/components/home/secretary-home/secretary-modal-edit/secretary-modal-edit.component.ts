@@ -1,4 +1,9 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -7,7 +12,12 @@ import {
 } from '@angular/forms';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {CommonModule, NgForOf, NgIf, TitleCasePipe} from '@angular/common';
+import {
+  CommonModule,
+  NgForOf,
+  NgIf,
+  TitleCasePipe,
+} from '@angular/common';
 import {ToastService} from '../../../../services/toast.service';
 
 @Component({
@@ -25,7 +35,8 @@ export class SecretaryModalEditComponent implements OnInit {
   private hasMotivInResponse = false;
   private totalItems = 10;
   private readonly destroyRef = inject(DestroyRef);
-  private readonly templateService = inject(TemplateService);
+  private readonly templateService =
+    inject(TemplateService);
   private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
@@ -51,7 +62,9 @@ export class SecretaryModalEditComponent implements OnInit {
               this.studentResponse = data;
               if (this.studentResponse.responses.motiv) {
                 this.hasMotivInResponse = true;
-                this.updateForm(this.studentResponse.responses);
+                this.updateForm(
+                  this.studentResponse.responses,
+                );
               } else {
                 this.hasMotivInResponse = false;
                 this.updateForm({
@@ -68,14 +81,18 @@ export class SecretaryModalEditComponent implements OnInit {
   }
 
   public openModal() {
-    const modal = document.getElementById('student-response-edit-modal');
+    const modal = document.getElementById(
+      'student-response-edit-modal',
+    );
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('student-response-edit-modal');
+    const modal = document.getElementById(
+      'student-response-edit-modal',
+    );
     if (modal) {
       modal.style.display = 'none';
     }
@@ -83,17 +100,22 @@ export class SecretaryModalEditComponent implements OnInit {
 
   private updateForm(responses: any) {
     Object.keys(responses).forEach((field: string) => {
-      this.templateFields = this.templateFields?.concat(field);
+      this.templateFields =
+        this.templateFields?.concat(field);
       this.dynamicForm.addControl(
         field,
-        new FormControl(responses[field], Validators.required),
+        new FormControl(
+          responses[field],
+          Validators.required,
+        ),
       );
     });
   }
 
   public onSubmit(): void {
     if (this.dynamicForm?.valid) {
-      const {motiv, ...formValueWithoutMotiv} = this.dynamicForm.value;
+      const {motiv, ...formValueWithoutMotiv} =
+        this.dynamicForm.value;
 
       let editedStudentResponse = {
         responses: this.hasMotivInResponse
@@ -103,28 +125,42 @@ export class SecretaryModalEditComponent implements OnInit {
       };
 
       this.templateService
-        .editStudentResponse(this.studentResponse.id, editedStudentResponse)
+        .editStudentResponse(
+          this.studentResponse.id,
+          editedStudentResponse,
+        )
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           (data) => {
-            const updatedStudentResponses = this.studentResponses.map(
-              (studentResponse: any) =>
-                studentResponse.id === data.id ? data : studentResponse,
-            );
+            const updatedStudentResponses =
+              this.studentResponses.map(
+                (studentResponse: any) =>
+                  studentResponse.id === data.id
+                    ? data
+                    : studentResponse,
+              );
 
-            this.templateService.setAllStudentsResponsesSource({
-              items: updatedStudentResponses,
-              totalItems: this.totalItems,
-            });
-            this.toasterService.showSuccess('Adeverință editată cu succes!');
+            this.templateService.setAllStudentsResponsesSource(
+              {
+                items: updatedStudentResponses,
+                totalItems: this.totalItems,
+              },
+            );
+            this.toasterService.showSuccess(
+              'Adeverință editată cu succes!',
+            );
             this.closeModal();
           },
           () => {
-            this.toasterService.showError('Adeverința nu au putut fi editată!');
-            this.templateService.setAllStudentsResponsesSource({
-              items: this.studentResponses,
-              totalItems: this.totalItems,
-            });
+            this.toasterService.showError(
+              'Adeverința nu au putut fi editată!',
+            );
+            this.templateService.setAllStudentsResponsesSource(
+              {
+                items: this.studentResponses,
+                totalItems: this.totalItems,
+              },
+            );
             this.closeModal();
           },
         );

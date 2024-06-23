@@ -1,4 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 
 import {StudentResponseModalEditComponent} from './student-response-modal-edit.component';
 
@@ -11,7 +14,9 @@ describe('StudentResponseModalEditComponent', () => {
       imports: [StudentResponseModalEditComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(StudentResponseModalEditComponent);
+    fixture = TestBed.createComponent(
+      StudentResponseModalEditComponent,
+    );
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

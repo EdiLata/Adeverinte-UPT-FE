@@ -6,14 +6,18 @@
     id="overlay"
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
   ></div>
-  <div class="relative p-4 flex justify-center items-center h-full">
+  <div
+    class="relative p-4 flex justify-center items-center h-full"
+  >
     <div
       class="relative bg-white overflow-auto rounded-lg max-h-[calc(100vh-2rem)] shadow dark:bg-gray-700"
     >
       <div
         class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
       >
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+        <h3
+          class="text-xl font-semibold text-gray-900 dark:text-white"
+        >
           Editează Un Tip De Adeverință
         </h3>
         <button
@@ -55,7 +59,8 @@
 
           <label
             class="block mb-2 mt-4 text-sm font-medium text-gray-900 dark:text-white"
-            >Alege specializările ce pot folosi acest tip de adeverință</label
+            >Alege specializările ce pot folosi acest tip de
+            adeverință</label
           >
           <div
             formArrayName="modalSpecializations"
@@ -75,7 +80,10 @@
               >{{ specializations[i] }}</label
             >
           </div>
-          <div *ngIf="specializationsError" class="text-red-600 mt-2">
+          <div
+            *ngIf="specializationsError"
+            class="text-red-600 mt-2"
+          >
             {{ specializationsError }}
           </div>
 
@@ -115,22 +123,29 @@
               class="mt-1 text-sm text-gray-500 dark:text-gray-300"
               id="template_help"
             >
-              Template-ul trebuie să fie un document word cu extensia .docx
+              Template-ul trebuie să fie un document word cu
+              extensia .docx
             </div>
-            <div *ngIf="fileError" class="text-red-600 mt-2">
+            <div
+              *ngIf="fileError"
+              class="text-red-600 mt-2"
+            >
               {{ fileError }}
             </div>
           </div>
 
           <label
             class="block mt-4 text-sm font-medium text-gray-900 dark:text-white"
-            >Completează ce date vrei să obți de la student în ordinea dorită
-            (ex. Nume)</label
+            >Completează ce date vrei să obți de la student
+            în ordinea dorită (ex. Nume)</label
           >
           <div
             class="mt-2 flex gap-2 items-center"
             formArrayName="dynamicInputs"
-            *ngFor="let input of dynamicInputs.controls; let i = index"
+            *ngFor="
+              let input of dynamicInputs.controls;
+              let i = index
+            "
           >
             <input
               [formControlName]="i"
@@ -193,9 +208,15 @@
           (click)="onSubmit()"
           [ngClass]="{
             'bg-gray-200 text-black hover:bg-gray-200':
-              fileError || specializationsError || modalForm.invalid,
+              fileError ||
+              specializationsError ||
+              modalForm.invalid,
           }"
-          [disabled]="fileError || specializationsError || modalForm.invalid"
+          [disabled]="
+            fileError ||
+            specializationsError ||
+            modalForm.invalid
+          "
           type="button"
           class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >

@@ -1,6 +1,11 @@
-<div class="mb-4 sm:mb-8 text-3xl sm:text-5xl font-bold">Adeverințele Tale</div>
+<div class="mb-4 sm:mb-8 text-3xl sm:text-5xl font-bold">
+  Adeverințele Tale
+</div>
 <div class="sm:flex sm:justify-between mb-5">
-  <form [formGroup]="searchForm" class="mb-4 sm:mb-0 sm:w-[50vw]">
+  <form
+    [formGroup]="searchForm"
+    class="mb-4 sm:mb-0 sm:w-[50vw]"
+  >
     <label
       for="default-search"
       class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -54,11 +59,19 @@
       class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
     >
       <tr>
-        <th scope="col" class="px-6 py-3">Tip Adeverință</th>
-        <th scope="col" class="px-6 py-3">Data Emiterii Cererii</th>
+        <th scope="col" class="px-6 py-3">
+          Tip Adeverință
+        </th>
+        <th scope="col" class="px-6 py-3">
+          Data Emiterii Cererii
+        </th>
         <th scope="col" class="px-6 py-3">Status</th>
-        <th scope="col" class="px-6 py-3">Motiv Eliberare</th>
-        <th scope="col" class="px-6 py-3 text-center">Acțiuni</th>
+        <th scope="col" class="px-6 py-3">
+          Motiv Eliberare
+        </th>
+        <th scope="col" class="px-6 py-3 text-center">
+          Acțiuni
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -73,7 +86,10 @@
           {{ studentResponse?.template?.name | titlecase }}
         </th>
         <td class="px-6 py-4">
-          {{ studentResponse?.responseDate | date: 'dd/MM/yyyy' }}
+          {{
+            studentResponse?.responseDate
+              | date: 'dd/MM/yyyy'
+          }}
         </td>
         <td class="px-6 py-4">
           {{ studentResponse?.status | titlecase }}
@@ -81,10 +97,16 @@
         <td class="px-6 py-4">
           {{ studentResponse?.reason }}
         </td>
-        <td class="px-6 py-4 flex gap-8 items-center justify-between">
+        <td
+          class="px-6 py-4 flex gap-8 items-center justify-between"
+        >
           <button
             class="cursor-pointer flex gap-3 items-center"
-            (click)="downloadStudentResponse(studentResponse?.filePath)"
+            (click)="
+              downloadStudentResponse(
+                studentResponse?.filePath
+              )
+            "
           >
             <svg
               class="w-6 h-6 text-gray-800 dark:text-white"
@@ -103,11 +125,17 @@
                 d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01"
               />
             </svg>
-            <div class="hidden md:block text-blue-500 underline">Descarcă</div>
+            <div
+              class="hidden md:block text-blue-500 underline"
+            >
+              Descarcă
+            </div>
           </button>
           <button
             class="cursor-pointer flex gap-3 items-center"
-            (click)="loadDocument(studentResponse?.filePath)"
+            (click)="
+              loadDocument(studentResponse?.filePath)
+            "
           >
             <svg
               class="w-6 h-6 text-gray-800 dark:text-white"
@@ -129,14 +157,20 @@
                 d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
               />
             </svg>
-            <div class="hidden md:block text-blue-500 underline">
+            <div
+              class="hidden md:block text-blue-500 underline"
+            >
               Vizualizează
             </div>
           </button>
 
           <button
             class="cursor-pointer flex gap-3 items-center"
-            (click)="openEditStudentResponseModal(studentResponse?.id)"
+            (click)="
+              openEditStudentResponseModal(
+                studentResponse?.id
+              )
+            "
           >
             <svg
               class="w-6 h-6 text-gray-800 dark:text-white"
@@ -155,12 +189,20 @@
                 d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"
               />
             </svg>
-            <div class="hidden md:block text-blue-500 underline">Editează</div>
+            <div
+              class="hidden md:block text-blue-500 underline"
+            >
+              Editează
+            </div>
           </button>
 
           <button
             class="cursor-pointer flex gap-3 items-center"
-            (click)="openDeleteStudentResponseModal(studentResponse?.id)"
+            (click)="
+              openDeleteStudentResponseModal(
+                studentResponse?.id
+              )
+            "
           >
             <svg
               class="w-6 h-6 text-gray-800 dark:text-white"
@@ -179,7 +221,11 @@
                 d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"
               />
             </svg>
-            <div class="hidden md:block text-blue-500 underline">Șterge</div>
+            <div
+              class="hidden md:block text-blue-500 underline"
+            >
+              Șterge
+            </div>
           </button>
         </td>
       </tr>

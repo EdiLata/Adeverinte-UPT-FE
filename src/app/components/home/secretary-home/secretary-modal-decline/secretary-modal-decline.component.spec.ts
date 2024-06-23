@@ -1,4 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 
 import {SecretaryModalDeclineComponent} from './secretary-modal-decline.component';
 
@@ -11,7 +14,9 @@ describe('SecretaryModalDeclineComponent', () => {
       imports: [SecretaryModalDeclineComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SecretaryModalDeclineComponent);
+    fixture = TestBed.createComponent(
+      SecretaryModalDeclineComponent,
+    );
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

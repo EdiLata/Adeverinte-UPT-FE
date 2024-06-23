@@ -37,14 +37,17 @@ import {ToastService} from '../../../services/toast.service';
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.scss',
 })
-export class AdminHomeComponent implements OnInit, AfterViewInit {
+export class AdminHomeComponent
+  implements OnInit, AfterViewInit
+{
   public specializations = Object.values(Specialization);
   public form: FormGroup = new FormGroup({
     specializations: new FormArray([]),
   });
   public templates: any = [];
   private readonly sanitizer = inject(DomSanitizer);
-  private readonly templateService = inject(TemplateService);
+  private readonly templateService =
+    inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toasterService = inject(ToastService);
 
@@ -73,9 +76,14 @@ export class AdminHomeComponent implements OnInit, AfterViewInit {
     );
 
     if (dropdownDefaultCheckbox && dropdownCheckboxButton) {
-      dropdownCheckboxButton.addEventListener('click', () => {
-        dropdownDefaultCheckbox.classList.toggle('hidden');
-      });
+      dropdownCheckboxButton.addEventListener(
+        'click',
+        () => {
+          dropdownDefaultCheckbox.classList.toggle(
+            'hidden',
+          );
+        },
+      );
     }
   }
 
@@ -86,7 +94,9 @@ export class AdminHomeComponent implements OnInit, AfterViewInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (response) => {
-          const blob = new Blob([response], {type: response.type});
+          const blob = new Blob([response], {
+            type: response.type,
+          });
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
@@ -97,16 +107,18 @@ export class AdminHomeComponent implements OnInit, AfterViewInit {
           document.body.removeChild(a);
         },
         () => {
-          this.toasterService.showError('Eroare la descărcarea fișierului!');
+          this.toasterService.showError(
+            'Eroare la descărcarea fișierului!',
+          );
         },
       );
   }
 
   private initSpecializations() {
     this.specializations.forEach(() => {
-      (this.form.controls['specializations'] as FormArray).push(
-        new FormControl(false),
-      );
+      (
+        this.form.controls['specializations'] as FormArray
+      ).push(new FormControl(false));
     });
 
     this.form.controls['specializations'].valueChanges
@@ -125,7 +137,8 @@ export class AdminHomeComponent implements OnInit, AfterViewInit {
   }
 
   private getTemplates() {
-    const selectedSpecializations = this.getSelectedSpecializations();
+    const selectedSpecializations =
+      this.getSelectedSpecializations();
     this.templateService
       .getTemplates(selectedSpecializations)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -134,7 +147,9 @@ export class AdminHomeComponent implements OnInit, AfterViewInit {
           this.templateService.setTemplatesSource(data);
         },
         () => {
-          this.toasterService.showError('Eroare la afișarea de template-uri!');
+          this.toasterService.showError(
+            'Eroare la afișarea de template-uri!',
+          );
           this.templateService.setTemplatesSource(null);
         },
       );
@@ -147,10 +162,13 @@ export class AdminHomeComponent implements OnInit, AfterViewInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (response) => {
-          const safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(
-            response.html,
+          const safeHtmlContent =
+            this.sanitizer.bypassSecurityTrustHtml(
+              response.html,
+            );
+          this.templateService.setViewModalContent(
+            safeHtmlContent,
           );
-          this.templateService.setViewModalContent(safeHtmlContent);
         },
         () => {
           this.toasterService.showError(

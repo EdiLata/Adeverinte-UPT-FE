@@ -1,4 +1,9 @@
-import {AfterViewInit, Component, inject, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {AuthenticationService} from '../../services/authentication.service';
 import {AdminHomeComponent} from './admin-home/admin-home.component';
 import {SecretaryHomeComponent} from './secretary-home/secretary-home.component';
@@ -18,13 +23,18 @@ import {TemplateService} from '../../services/template.service';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent
+  implements OnInit, AfterViewInit
+{
   public isAdmin = false;
   public isStudent = false;
   public isSecretary = false;
   public userEmail = '';
-  private readonly templateService = inject(TemplateService);
-  private readonly authService = inject(AuthenticationService);
+  private readonly templateService =
+    inject(TemplateService);
+  private readonly authService = inject(
+    AuthenticationService,
+  );
 
   ngOnInit() {
     this.templateService.setDeleteModal(null);
@@ -71,9 +81,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
     );
 
     if (dropdownButtonDesktop && dropdownMenuDesktop) {
-      dropdownButtonDesktop.addEventListener('click', () => {
-        dropdownMenuDesktop.classList.toggle('hidden');
-      });
+      dropdownButtonDesktop.addEventListener(
+        'click',
+        () => {
+          dropdownMenuDesktop.classList.toggle('hidden');
+        },
+      );
     }
   }
 }

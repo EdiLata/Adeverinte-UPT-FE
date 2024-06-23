@@ -14,7 +14,9 @@ import {AuthenticationService} from '../services/authentication.service';
 })
 export class AuthGuard implements CanActivate {
   private readonly router = inject(Router);
-  private readonly authService = inject(AuthenticationService);
+  private readonly authService = inject(
+    AuthenticationService,
+  );
 
   canActivate(
     route: ActivatedRouteSnapshot,

@@ -1,4 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 
 import {AdminModalDeleteComponent} from './admin-modal-delete.component';
 
@@ -11,7 +14,9 @@ describe('ModalDeleteComponent', () => {
       imports: [AdminModalDeleteComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AdminModalDeleteComponent);
+    fixture = TestBed.createComponent(
+      AdminModalDeleteComponent,
+    );
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

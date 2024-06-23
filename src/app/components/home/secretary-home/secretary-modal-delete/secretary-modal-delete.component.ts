@@ -1,4 +1,9 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ToastService} from '../../../../services/toast.service';
@@ -10,12 +15,15 @@ import {ToastService} from '../../../../services/toast.service';
   templateUrl: './secretary-modal-delete.component.html',
   styleUrl: './secretary-modal-delete.component.scss',
 })
-export class SecretaryModalDeleteComponent implements OnInit {
+export class SecretaryModalDeleteComponent
+  implements OnInit
+{
   public studentResponseId: number | null = null;
   public studentResponses: any = [];
   private totalItems = 10;
   private readonly destroyRef = inject(DestroyRef);
-  private readonly templateService = inject(TemplateService);
+  private readonly templateService =
+    inject(TemplateService);
   private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
@@ -41,14 +49,18 @@ export class SecretaryModalDeleteComponent implements OnInit {
   }
 
   public openModal() {
-    const modal = document.getElementById('student-response-delete-modal');
+    const modal = document.getElementById(
+      'student-response-delete-modal',
+    );
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('student-response-delete-modal');
+    const modal = document.getElementById(
+      'student-response-delete-modal',
+    );
     if (modal) {
       modal.style.display = 'none';
     }
@@ -61,22 +73,31 @@ export class SecretaryModalDeleteComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           () => {
-            const studentResponsesAfterRemoval = this.studentResponses?.filter(
-              (item: any) => item.id !== id,
+            const studentResponsesAfterRemoval =
+              this.studentResponses?.filter(
+                (item: any) => item.id !== id,
+              );
+            this.templateService.setAllStudentsResponsesSource(
+              {
+                items: studentResponsesAfterRemoval,
+                totalItems: this.totalItems - 1,
+              },
             );
-            this.templateService.setAllStudentsResponsesSource({
-              items: studentResponsesAfterRemoval,
-              totalItems: this.totalItems - 1,
-            });
-            this.toasterService.showSuccess('Adeverință ștearsă cu succes!');
+            this.toasterService.showSuccess(
+              'Adeverință ștearsă cu succes!',
+            );
             this.closeModal();
           },
           () => {
-            this.toasterService.showError('Adeverința nu au putut fi ștearsă!');
-            this.templateService.setAllStudentsResponsesSource({
-              items: this.studentResponses,
-              totalItems: this.totalItems,
-            });
+            this.toasterService.showError(
+              'Adeverința nu au putut fi ștearsă!',
+            );
+            this.templateService.setAllStudentsResponsesSource(
+              {
+                items: this.studentResponses,
+                totalItems: this.totalItems,
+              },
+            );
             this.closeModal();
           },
         );

@@ -49,6 +49,23 @@ export class AuthenticationService {
     return localStorage.getItem('access_token');
   }
 
+  public getUserId(): number {
+    const decodedToken = this.decodeToken();
+    return decodedToken ? decodedToken.id : null;
+  }
+
+  public getUserSpecialization() {
+    const decodedToken = this.decodeToken();
+    return decodedToken
+      ? [decodedToken.specialization]
+      : undefined;
+  }
+
+  public getUserEmail(): string {
+    const decodedToken = this.decodeToken();
+    return decodedToken ? decodedToken.email : null;
+  }
+
   private decodeToken(): any {
     const token = this.getToken();
     if (token) {
@@ -60,21 +77,6 @@ export class AuthenticationService {
   public getUserRole(): UserRole {
     const decodedToken = this.decodeToken();
     return decodedToken ? decodedToken.role : null;
-  }
-
-  public getUserId(): number {
-    const decodedToken = this.decodeToken();
-    return decodedToken ? decodedToken.id : null;
-  }
-
-  public getUserSpecialization() {
-    const decodedToken = this.decodeToken();
-    return decodedToken ? [decodedToken.specialization] : undefined;
-  }
-
-  public getUserEmail(): string {
-    const decodedToken = this.decodeToken();
-    return decodedToken ? decodedToken.email : null;
   }
 
   public isStudent() {

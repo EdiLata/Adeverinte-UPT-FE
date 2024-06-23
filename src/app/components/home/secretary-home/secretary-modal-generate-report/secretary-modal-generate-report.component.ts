@@ -22,22 +22,26 @@ import {CommonModule} from '@angular/common';
   selector: 'app-secretary-modal-generate-report',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './secretary-modal-generate-report.component.html',
-  styleUrl: './secretary-modal-generate-report.component.scss',
+  templateUrl:
+    './secretary-modal-generate-report.component.html',
+  styleUrl:
+    './secretary-modal-generate-report.component.scss',
 })
 export class SecretaryModalGenerateReportComponent
   implements OnInit, AfterViewInit
 {
   @ViewChild('startDateField', {static: true})
   public startDateField!: ElementRef;
-  @ViewChild('endDateField', {static: true}) public endDateField!: ElementRef;
+  @ViewChild('endDateField', {static: true})
+  public endDateField!: ElementRef;
 
   public dateRangeForm: FormGroup = new FormGroup({
     start: new FormControl('', Validators.required),
     end: new FormControl('', Validators.required),
   });
   public isDateRangeInvalid = true;
-  private readonly templateService = inject(TemplateService);
+  private readonly templateService =
+    inject(TemplateService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -66,19 +70,27 @@ export class SecretaryModalGenerateReportComponent
   }
 
   ngAfterViewInit() {
-    this.initDatePickerElement(this.startDateField.nativeElement);
-    this.initDatePickerElement(this.endDateField.nativeElement);
+    this.initDatePickerElement(
+      this.startDateField.nativeElement,
+    );
+    this.initDatePickerElement(
+      this.endDateField.nativeElement,
+    );
   }
 
   public openModal() {
-    const modal = document.getElementById('generate-report-modal');
+    const modal = document.getElementById(
+      'generate-report-modal',
+    );
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('generate-report-modal');
+    const modal = document.getElementById(
+      'generate-report-modal',
+    );
     if (modal) {
       modal.style.display = 'none';
     }
@@ -86,7 +98,9 @@ export class SecretaryModalGenerateReportComponent
 
   public generateReport() {
     const queryParams = this.dateRangeForm.value;
-    this.router.navigate(['/generated-report'], {queryParams});
+    this.router.navigate(['/generated-report'], {
+      queryParams,
+    });
   }
 
   private initDatePickerElement(element: any): void {
@@ -95,7 +109,8 @@ export class SecretaryModalGenerateReportComponent
     element.addEventListener('changeDate', (e: any) => {
       const value = e.target.value;
       const formControlName = e.target.getAttribute('name');
-      const formControl = this.dateRangeForm.get(formControlName);
+      const formControl =
+        this.dateRangeForm.get(formControlName);
       formControl?.setValue(value);
       formControl?.markAsDirty();
     });

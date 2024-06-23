@@ -1,20 +1,33 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {TemplateService} from '../../../../services/template.service';
 import {ActivatedRoute, RouterLink} from '@angular/router';
-import {DatePipe, NgForOf, TitleCasePipe} from '@angular/common';
+import {
+  DatePipe,
+  NgForOf,
+  TitleCasePipe,
+} from '@angular/common';
 import {ToastService} from '../../../../services/toast.service';
 
 @Component({
   selector: 'app-secretary-generated-report',
   standalone: true,
   imports: [DatePipe, NgForOf, TitleCasePipe, RouterLink],
-  templateUrl: './secretary-generated-report.component.html',
+  templateUrl:
+    './secretary-generated-report.component.html',
   styleUrl: './secretary-generated-report.component.scss',
 })
-export class SecretaryGeneratedReportComponent implements OnInit {
+export class SecretaryGeneratedReportComponent
+  implements OnInit
+{
   public approvedStudentsResponses: any[] = [];
-  private readonly templateService = inject(TemplateService);
+  private readonly templateService =
+    inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly toasterService = inject(ToastService);
@@ -40,7 +53,8 @@ export class SecretaryGeneratedReportComponent implements OnInit {
   }
 
   public printContent(): void {
-    const printContent = document.getElementById('print-section')?.innerHTML;
+    const printContent =
+      document.getElementById('print-section')?.innerHTML;
     const WindowPrt = window.open(
       '',
       '',

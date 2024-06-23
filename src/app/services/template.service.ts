@@ -13,17 +13,34 @@ export class TemplateService {
   private readonly http = inject(HttpClient);
 
   private templatesSource = new BehaviorSubject<any>(null);
-  private studentResponsesSource = new BehaviorSubject<any>(null);
-  private allStudentsResponsesSource = new BehaviorSubject<any>(null);
+  private studentResponsesSource = new BehaviorSubject<any>(
+    null,
+  );
+  private allStudentsResponsesSource =
+    new BehaviorSubject<any>(null);
 
-  private addModalSource = new BehaviorSubject<boolean>(false);
-  private generateReportModalSource = new BehaviorSubject<boolean>(false);
-  private viewModalContentSource = new BehaviorSubject<SafeHtml | null>(null);
-  private deleteModalSource = new BehaviorSubject<number | null>(null);
-  private editModalSource = new BehaviorSubject<number | null>(null);
-  private approveModalSource = new BehaviorSubject<number | null>(null);
-  private declineModalSource = new BehaviorSubject<number | null>(null);
-  private redoModalSource = new BehaviorSubject<number | null>(null);
+  private addModalSource = new BehaviorSubject<boolean>(
+    false,
+  );
+  private generateReportModalSource =
+    new BehaviorSubject<boolean>(false);
+  private viewModalContentSource =
+    new BehaviorSubject<SafeHtml | null>(null);
+  private deleteModalSource = new BehaviorSubject<
+    number | null
+  >(null);
+  private editModalSource = new BehaviorSubject<
+    number | null
+  >(null);
+  private approveModalSource = new BehaviorSubject<
+    number | null
+  >(null);
+  private declineModalSource = new BehaviorSubject<
+    number | null
+  >(null);
+  private redoModalSource = new BehaviorSubject<
+    number | null
+  >(null);
 
   public setGenerateReportModal(isOpened: boolean): void {
     this.generateReportModalSource.next(isOpened);
@@ -57,7 +74,9 @@ export class TemplateService {
     return this.redoModalSource.asObservable();
   }
 
-  public setAllStudentsResponsesSource(responses: any): void {
+  public setAllStudentsResponsesSource(
+    responses: any,
+  ): void {
     this.allStudentsResponsesSource.next(responses);
   }
 
@@ -128,7 +147,9 @@ export class TemplateService {
   }
 
   public getTemplate(id: number) {
-    return this.http.get<any>(`http://localhost:3000/templates/${id}`);
+    return this.http.get<any>(
+      `http://localhost:3000/templates/${id}`,
+    );
   }
 
   public editTemplate(id: number, formData: any) {
@@ -160,10 +181,18 @@ export class TemplateService {
     let params = new HttpParams();
     if (specializations && specializations.length > 0) {
       specializations.forEach((specialization) => {
-        params = params.append('specializations', specialization);
+        params = params.append(
+          'specializations',
+          specialization,
+        );
       });
     }
-    return this.http.get<any>(`http://localhost:3000/templates`, {params});
+    return this.http.get<any>(
+      `http://localhost:3000/templates`,
+      {
+        params,
+      },
+    );
   }
 
   public getAllStudentsResponses(
@@ -187,7 +216,10 @@ export class TemplateService {
 
     if (specializations && specializations.length > 0) {
       specializations.forEach((specialization) => {
-        params = params.append('specializations', specialization);
+        params = params.append(
+          'specializations',
+          specialization,
+        );
       });
     }
 
@@ -238,14 +270,20 @@ export class TemplateService {
     );
   }
 
-  public editStudentResponse(studentResponseId: number, formData: any) {
+  public editStudentResponse(
+    studentResponseId: number,
+    formData: any,
+  ) {
     return this.http.put<any>(
       `http://localhost:3000/templates/student-responses/${studentResponseId}`,
       formData,
     );
   }
 
-  public updateStudentResponseStatus(studentResponseId: number, formData: any) {
+  public updateStudentResponseStatus(
+    studentResponseId: number,
+    formData: any,
+  ) {
     return this.http.patch<any>(
       `http://localhost:3000/templates/${studentResponseId}/status`,
       formData,

@@ -1,4 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 
 import {SecretaryModalRedoComponent} from './secretary-modal-redo.component';
 
@@ -11,7 +14,9 @@ describe('SecretaryModalRedoComponent', () => {
       imports: [SecretaryModalRedoComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SecretaryModalRedoComponent);
+    fixture = TestBed.createComponent(
+      SecretaryModalRedoComponent,
+    );
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

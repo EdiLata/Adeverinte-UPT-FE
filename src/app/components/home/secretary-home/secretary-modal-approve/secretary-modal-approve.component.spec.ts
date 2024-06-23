@@ -1,4 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 
 import {SecretaryModalApproveComponent} from './secretary-modal-approve.component';
 
@@ -11,7 +14,9 @@ describe('SecretaryModalApproveComponent', () => {
       imports: [SecretaryModalApproveComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SecretaryModalApproveComponent);
+    fixture = TestBed.createComponent(
+      SecretaryModalApproveComponent,
+    );
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

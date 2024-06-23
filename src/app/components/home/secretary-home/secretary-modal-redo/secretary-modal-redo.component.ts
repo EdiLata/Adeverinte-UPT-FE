@@ -1,4 +1,9 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ResponseStatus} from '../../../../enums/response-status.enum';
@@ -16,7 +21,8 @@ export class SecretaryModalRedoComponent implements OnInit {
   public studentResponses: any = [];
   private totalItems = 10;
   private readonly destroyRef = inject(DestroyRef);
-  private readonly templateService = inject(TemplateService);
+  private readonly templateService =
+    inject(TemplateService);
   private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
@@ -42,14 +48,18 @@ export class SecretaryModalRedoComponent implements OnInit {
   }
 
   public openModal() {
-    const modal = document.getElementById('student-response-redo-modal');
+    const modal = document.getElementById(
+      'student-response-redo-modal',
+    );
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('student-response-redo-modal');
+    const modal = document.getElementById(
+      'student-response-redo-modal',
+    );
     if (modal) {
       modal.style.display = 'none';
     }
@@ -64,14 +74,17 @@ export class SecretaryModalRedoComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           () => {
-            const studentResponsesAfterRedoing = this.studentResponses?.filter(
-              (item: any) => item.id !== id,
-            );
+            const studentResponsesAfterRedoing =
+              this.studentResponses?.filter(
+                (item: any) => item.id !== id,
+              );
 
-            this.templateService.setAllStudentsResponsesSource({
-              items: studentResponsesAfterRedoing,
-              totalItems: this.totalItems - 1,
-            });
+            this.templateService.setAllStudentsResponsesSource(
+              {
+                items: studentResponsesAfterRedoing,
+                totalItems: this.totalItems - 1,
+              },
+            );
             this.toasterService.showSuccess(
               'Adeverință retrimisă la reevaluare cu succes!',
             );
@@ -81,10 +94,12 @@ export class SecretaryModalRedoComponent implements OnInit {
             this.toasterService.showError(
               'Adeverința nu au putut fi trimisă pentru reevaaluare!',
             );
-            this.templateService.setAllStudentsResponsesSource({
-              items: this.studentResponses,
-              totalItems: this.totalItems,
-            });
+            this.templateService.setAllStudentsResponsesSource(
+              {
+                items: this.studentResponses,
+                totalItems: this.totalItems,
+              },
+            );
             this.closeModal();
           },
         );

@@ -40,7 +40,9 @@
       </svg>
     </div>
 
-    <div class="flex sm:mr-6 cursor-pointer sm:mt-5 md:hidden">
+    <div
+      class="flex sm:mr-6 cursor-pointer sm:mt-5 md:hidden"
+    >
       <svg
         id="dropdownInformationButtonMobile"
         data-dropdown-toggle="dropdownInformationMobile"
@@ -76,8 +78,12 @@
   id="dropdownInformationMobile"
   class="z-10 hidden !fixed !top-16 !right-4 sm:!top-[108px] sm:!right-10 !transform-none !inset-auto bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
 >
-  <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-    <div class="font-medium truncate">{{ userEmail }}</div>
+  <div
+    class="px-4 py-3 text-sm text-gray-900 dark:text-white"
+  >
+    <div class="font-medium truncate">
+      {{ userEmail }}
+    </div>
   </div>
   <div class="py-2 cursor-pointer">
     <a

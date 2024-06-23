@@ -1,4 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 
 import {SecretaryGeneratedReportComponent} from './secretary-generated-report.component';
 
@@ -11,7 +14,9 @@ describe('SecretaryGeneratedReportComponent', () => {
       imports: [SecretaryGeneratedReportComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SecretaryGeneratedReportComponent);
+    fixture = TestBed.createComponent(
+      SecretaryGeneratedReportComponent,
+    );
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,4 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 
 import {SecretaryHomeComponent} from './secretary-home.component';
 
@@ -11,7 +14,9 @@ describe('SecretaryHomeComponent', () => {
       imports: [SecretaryHomeComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SecretaryHomeComponent);
+    fixture = TestBed.createComponent(
+      SecretaryHomeComponent,
+    );
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

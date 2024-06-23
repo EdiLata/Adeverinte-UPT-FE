@@ -1,4 +1,9 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {TemplateService} from '../../../../services/template.service';
 import {
@@ -15,10 +20,13 @@ import {AuthenticationService} from '../../../../services/authentication.service
   selector: 'app-student-response-modal-add',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './student-response-modal-add.component.html',
+  templateUrl:
+    './student-response-modal-add.component.html',
   styleUrl: './student-response-modal-add.component.scss',
 })
-export class StudentResponseModalAddComponent implements OnInit {
+export class StudentResponseModalAddComponent
+  implements OnInit
+{
   public studentResponses: any = [];
   public templateId: number | null = null;
   public templateTypes: any = [];
@@ -26,10 +34,13 @@ export class StudentResponseModalAddComponent implements OnInit {
   public templateTypeControl = new FormControl('');
   public dynamicForm: FormGroup = new FormGroup({});
   private hasMotivInResponse = false;
-  private readonly templateService = inject(TemplateService);
+  private readonly templateService =
+    inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toasterService = inject(ToastService);
-  private readonly authService = inject(AuthenticationService);
+  private readonly authService = inject(
+    AuthenticationService,
+  );
 
   ngOnInit() {
     this.templateService
@@ -43,32 +54,36 @@ export class StudentResponseModalAddComponent implements OnInit {
         }
       });
 
-    this.templateTypeControl.valueChanges.subscribe((value) => {
-      this.templateId = Number(value);
-      this.templateService
-        .getTemplateFields(value as any)
-        .subscribe((templateFields) => {
-          this.templateFields = templateFields?.map((templateField: any) => {
-            return templateField.fieldName;
-          });
-
-          if (!this.templateFields.includes('motiv')) {
-            this.templateFields.push('motiv');
-            this.hasMotivInResponse = false;
-          } else {
-            this.hasMotivInResponse = true;
-          }
-
-          this.dynamicForm = new FormGroup({});
-
-          this.templateFields.forEach((field: any) => {
-            this.dynamicForm.addControl(
-              field,
-              new FormControl('', Validators.required),
+    this.templateTypeControl.valueChanges.subscribe(
+      (value) => {
+        this.templateId = Number(value);
+        this.templateService
+          .getTemplateFields(value as any)
+          .subscribe((templateFields) => {
+            this.templateFields = templateFields?.map(
+              (templateField: any) => {
+                return templateField.fieldName;
+              },
             );
+
+            if (!this.templateFields.includes('motiv')) {
+              this.templateFields.push('motiv');
+              this.hasMotivInResponse = false;
+            } else {
+              this.hasMotivInResponse = true;
+            }
+
+            this.dynamicForm = new FormGroup({});
+
+            this.templateFields.forEach((field: any) => {
+              this.dynamicForm.addControl(
+                field,
+                new FormControl('', Validators.required),
+              );
+            });
           });
-        });
-    });
+      },
+    );
 
     this.templateService
       .getStudentResponsesSource()
@@ -78,7 +93,9 @@ export class StudentResponseModalAddComponent implements OnInit {
       });
 
     this.templateService
-      .getTemplates(this.authService.getUserSpecialization())
+      .getTemplates(
+        this.authService.getUserSpecialization(),
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (data) => {
@@ -99,7 +116,8 @@ export class StudentResponseModalAddComponent implements OnInit {
 
   public onSubmit() {
     if (this.dynamicForm?.valid) {
-      const {motiv, ...formValueWithoutMotiv} = this.dynamicForm.value;
+      const {motiv, ...formValueWithoutMotiv} =
+        this.dynamicForm.value;
 
       let filledTemplate = {
         templateId: this.templateId,
@@ -118,12 +136,18 @@ export class StudentResponseModalAddComponent implements OnInit {
             this.templateService.setStudentResponsesSource(
               this.studentResponses.concat(data),
             );
-            this.toasterService.showSuccess('Adeverință completată cu succes!');
+            this.toasterService.showSuccess(
+              'Adeverință completată cu succes!',
+            );
             this.closeModal();
           },
           () => {
-            this.toasterService.showError('Eroare la completarea adeverinței!');
-            this.templateService.setTemplatesSource(this.studentResponses);
+            this.toasterService.showError(
+              'Eroare la completarea adeverinței!',
+            );
+            this.templateService.setTemplatesSource(
+              this.studentResponses,
+            );
             this.closeModal();
           },
         );
@@ -139,14 +163,18 @@ export class StudentResponseModalAddComponent implements OnInit {
   }
 
   public openModal() {
-    const modal = document.getElementById('student-response-add-modal');
+    const modal = document.getElementById(
+      'student-response-add-modal',
+    );
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('student-response-add-modal');
+    const modal = document.getElementById(
+      'student-response-add-modal',
+    );
     if (modal) {
       modal.style.display = 'none';
     }

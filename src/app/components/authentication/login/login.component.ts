@@ -1,6 +1,15 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
-import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import {AuthenticationService} from '../../../services/authentication.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {CommonModule} from '@angular/common';
@@ -18,7 +27,9 @@ export class LoginComponent implements OnInit {
     email: new FormControl(''),
     password: new FormControl(''),
   });
-  private readonly authenticationService = inject(AuthenticationService);
+  private readonly authenticationService = inject(
+    AuthenticationService,
+  );
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toasterService = inject(ToastService);
@@ -38,12 +49,19 @@ export class LoginComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (response) => {
-          this.toasterService.showSuccess('Logare cu succes!');
-          localStorage.setItem('access_token', response.access_token);
+          this.toasterService.showSuccess(
+            'Logare cu succes!',
+          );
+          localStorage.setItem(
+            'access_token',
+            response.access_token,
+          );
           this.router.navigate(['/home']);
         },
         () => {
-          this.toasterService.showError('Datele introduse sunt incorecte!');
+          this.toasterService.showError(
+            'Datele introduse sunt incorecte!',
+          );
         },
       );
   }

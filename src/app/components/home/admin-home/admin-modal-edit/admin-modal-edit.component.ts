@@ -1,4 +1,9 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {TemplateService} from '../../../../services/template.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {CommonModule} from '@angular/common';
@@ -26,7 +31,10 @@ export class AdminModalEditComponent implements OnInit {
   public specializationsError: string | null = null;
   public modalForm: FormGroup = new FormGroup({
     name: new FormControl('', Validators.required),
-    modalSpecializations: new FormArray([], Validators.required),
+    modalSpecializations: new FormArray(
+      [],
+      Validators.required,
+    ),
     templateFile: new FormControl(null),
     dynamicInputs: new FormArray([], Validators.required),
   });
@@ -34,11 +42,14 @@ export class AdminModalEditComponent implements OnInit {
   public template: any = null;
   public isTemplateUploadEnabled: boolean = false;
   private readonly destroyRef = inject(DestroyRef);
-  private readonly templateService = inject(TemplateService);
+  private readonly templateService =
+    inject(TemplateService);
   private readonly toasterService = inject(ToastService);
 
   ngOnInit() {
-    this.modalForm.controls['modalSpecializations'].valueChanges
+    this.modalForm.controls[
+      'modalSpecializations'
+    ].valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
         if (value.every((element: boolean) => !element)) {
@@ -78,23 +89,29 @@ export class AdminModalEditComponent implements OnInit {
   }
 
   public openModal() {
-    const modal = document.getElementById('admin-edit-modal');
+    const modal = document.getElementById(
+      'admin-edit-modal',
+    );
     if (modal) {
       modal.style.display = 'block';
     }
   }
 
   public closeModal() {
-    const modal = document.getElementById('admin-edit-modal');
+    const modal = document.getElementById(
+      'admin-edit-modal',
+    );
     if (modal) {
       modal.style.display = 'none';
     }
   }
   private initSpecializations() {
     this.specializations.forEach(() => {
-      (this.modalForm.controls['modalSpecializations'] as FormArray).push(
-        new FormControl(false, Validators.required),
-      );
+      (
+        this.modalForm.controls[
+          'modalSpecializations'
+        ] as FormArray
+      ).push(new FormControl(false, Validators.required));
     });
   }
 
@@ -113,19 +130,29 @@ export class AdminModalEditComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      const fileExtension = file.name
+        .split('.')
+        .pop()
+        ?.toLowerCase();
       if (fileExtension === 'docx') {
-        this.modalForm.patchValue({templateFile: file});
+        this.modalForm.patchValue({
+          templateFile: file,
+        });
         this.fileError = null;
       } else {
-        this.modalForm.patchValue({templateFile: null});
-        this.fileError = 'Fișierul trebuie să aibă extensia .docx';
+        this.modalForm.patchValue({
+          templateFile: null,
+        });
+        this.fileError =
+          'Fișierul trebuie să aibă extensia .docx';
       }
     }
   }
 
   get modalSpecializations(): FormArray {
-    return this.modalForm.get('modalSpecializations') as FormArray;
+    return this.modalForm.get(
+      'modalSpecializations',
+    ) as FormArray;
   }
 
   get dynamicInputs(): FormArray {
@@ -133,7 +160,9 @@ export class AdminModalEditComponent implements OnInit {
   }
 
   public addInput(): void {
-    this.dynamicInputs.push(new FormControl('', Validators.required));
+    this.dynamicInputs.push(
+      new FormControl('', Validators.required),
+    );
   }
 
   public removeInput(index: number): void {
@@ -146,32 +175,49 @@ export class AdminModalEditComponent implements OnInit {
         name: this.modalForm.controls['name'].value,
         specializations: this.getSelectedSpecializations(),
         file: this.modalForm.controls['templateFile'].value,
-        fields: this.modalForm.controls['dynamicInputs'].value,
+        fields:
+          this.modalForm.controls['dynamicInputs'].value,
       };
 
       const formData = new FormData();
       if (this.modalForm.controls['templateFile'].value) {
-        formData.append('file', template.file, template.file.name);
+        formData.append(
+          'file',
+          template.file,
+          template.file.name,
+        );
       }
       formData.append('name', template.name);
       formData.append('fields', template.fields);
-      formData.append('specializations', template.specializations);
+      formData.append(
+        'specializations',
+        template.specializations,
+      );
 
       this.templateService
         .editTemplate(this.template.id, formData)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           (data) => {
-            const updatedTemplates = this.templates.map((template: any) =>
-              template.id === data.id ? data : template,
+            const updatedTemplates = this.templates.map(
+              (template: any) =>
+                template.id === data.id ? data : template,
             );
-            this.templateService.setTemplatesSource(updatedTemplates);
-            this.toasterService.showSuccess('Template editat cu succes!');
+            this.templateService.setTemplatesSource(
+              updatedTemplates,
+            );
+            this.toasterService.showSuccess(
+              'Template editat cu succes!',
+            );
             this.closeModal();
           },
           () => {
-            this.toasterService.showError('Template-ul nu a putut fi editat!');
-            this.templateService.setTemplatesSource(this.templates);
+            this.toasterService.showError(
+              'Template-ul nu a putut fi editat!',
+            );
+            this.templateService.setTemplatesSource(
+              this.templates,
+            );
             this.closeModal();
           },
         );
@@ -190,26 +236,36 @@ export class AdminModalEditComponent implements OnInit {
     ) as FormArray;
     modalSpecializationsArray.clear();
 
-    if (template.specializations && Array.isArray(template.specializations)) {
+    if (
+      template.specializations &&
+      Array.isArray(template.specializations)
+    ) {
       const result = this.specializations.map((item) =>
         template.specializations.includes(item),
       );
       result.forEach((checked) => {
-        modalSpecializationsArray.push(new FormControl(checked));
+        modalSpecializationsArray.push(
+          new FormControl(checked),
+        );
       });
     }
 
-    const dynamicInputsArray = this.modalForm.get('dynamicInputs') as FormArray;
+    const dynamicInputsArray = this.modalForm.get(
+      'dynamicInputs',
+    ) as FormArray;
     dynamicInputsArray.clear();
     if (template.fields && Array.isArray(template.fields)) {
       template.fields.forEach((input: any) => {
-        dynamicInputsArray.push(new FormControl(input.fieldName));
+        dynamicInputsArray.push(
+          new FormControl(input.fieldName),
+        );
       });
     }
   }
 
   public toggleTemplateUpload() {
-    this.isTemplateUploadEnabled = !this.isTemplateUploadEnabled;
+    this.isTemplateUploadEnabled =
+      !this.isTemplateUploadEnabled;
     this.fileError = null;
   }
 }

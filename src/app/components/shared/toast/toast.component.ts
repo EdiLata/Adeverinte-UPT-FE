@@ -1,4 +1,9 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {ToastService} from '../../../services/toast.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ToastType} from '../../../enums/toast-type.enum';

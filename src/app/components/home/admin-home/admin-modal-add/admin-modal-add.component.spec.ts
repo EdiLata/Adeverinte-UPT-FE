@@ -1,4 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 
 import {AdminModalAddComponent} from './admin-modal-add.component';
 
@@ -11,7 +14,9 @@ describe('ModalComponent', () => {
       imports: [AdminModalAddComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AdminModalAddComponent);
+    fixture = TestBed.createComponent(
+      AdminModalAddComponent,
+    );
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

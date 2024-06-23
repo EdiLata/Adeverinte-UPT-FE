@@ -1,4 +1,7 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+} from '@angular/core/testing';
 
 import {StudentResponseModalDeleteComponent} from './student-response-modal-delete.component';
 
@@ -11,7 +14,9 @@ describe('StudentResponseModalDeleteComponent', () => {
       imports: [StudentResponseModalDeleteComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(StudentResponseModalDeleteComponent);
+    fixture = TestBed.createComponent(
+      StudentResponseModalDeleteComponent,
+    );
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

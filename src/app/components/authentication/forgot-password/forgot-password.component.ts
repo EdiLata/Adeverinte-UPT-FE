@@ -1,4 +1,9 @@
-import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import {
   FormControl,
@@ -22,13 +27,20 @@ import {ToastService} from '../../../services/toast.service';
 export class ForgotPasswordComponent implements OnInit {
   public forgotPasswordForm: FormGroup = new FormGroup(
     {
-      email: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl('', [
+        Validators.required,
+        Validators.email,
+      ]),
       password: new FormControl('', [Validators.required]),
-      confirmPassword: new FormControl('', [Validators.required]),
+      confirmPassword: new FormControl('', [
+        Validators.required,
+      ]),
     },
     {validators: confirmPasswordValidator},
   );
-  private readonly authenticationService = inject(AuthenticationService);
+  private readonly authenticationService = inject(
+    AuthenticationService,
+  );
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toasterService = inject(ToastService);
@@ -40,8 +52,11 @@ export class ForgotPasswordComponent implements OnInit {
   public resetPassword() {
     if (this.forgotPasswordForm.valid) {
       let user = {
-        email: this.forgotPasswordForm.controls['email'].value,
-        password: this.forgotPasswordForm.controls['password'].value,
+        email:
+          this.forgotPasswordForm.controls['email'].value,
+        password:
+          this.forgotPasswordForm.controls['password']
+            .value,
       };
 
       this.authenticationService
@@ -49,7 +64,9 @@ export class ForgotPasswordComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(
           () => {
-            this.toasterService.showSuccess('Resetare parolă cu succes!');
+            this.toasterService.showSuccess(
+              'Resetare parolă cu succes!',
+            );
             this.router.navigate(['/login']);
           },
           () => {

@@ -54,12 +54,15 @@ import {ToastService} from '../../../services/toast.service';
   templateUrl: './secretary-home.component.html',
   styleUrl: './secretary-home.component.scss',
 })
-export class SecretaryHomeComponent implements OnInit, AfterViewInit {
+export class SecretaryHomeComponent
+  implements OnInit, AfterViewInit
+{
   public allStudentsResponses: any[] = [];
   public faculties = Object.values(Faculty);
   public specializations = Object.values(Specialization);
   public years = [1, 2, 3, 4];
-  public selectedStatus: ResponseStatus = ResponseStatus.SENT;
+  public selectedStatus: ResponseStatus =
+    ResponseStatus.SENT;
   public page: number = 1;
   public limit: number = 10;
   public totalItems: number = 10;
@@ -73,14 +76,19 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
   });
   protected readonly ResponseStatus = ResponseStatus;
   private readonly sanitizer = inject(DomSanitizer);
-  private readonly templateService = inject(TemplateService);
+  private readonly templateService =
+    inject(TemplateService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly paginationService = inject(PaginationService);
+  private readonly paginationService = inject(
+    PaginationService,
+  );
   private readonly toasterService = inject(ToastService);
 
   ngOnInit(): void {
-    this.page = this.paginationService.getDefaultPageNumber();
-    this.limit = this.paginationService.getDefaultPageSize();
+    this.page =
+      this.paginationService.getDefaultPageNumber();
+    this.limit =
+      this.paginationService.getDefaultPageSize();
 
     this.initFormControls();
     this.getAllStudentsResponses();
@@ -89,10 +97,15 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
       .getAllStudentsResponsesSource()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        this.allStudentsResponses = value?.items?.filter((element: any) =>
-          element?.student?.email
-            ?.toLowerCase()
-            .includes(this.searchForm.get('searchQuery')?.value?.toLowerCase()),
+        this.allStudentsResponses = value?.items?.filter(
+          (element: any) =>
+            element?.student?.email
+              ?.toLowerCase()
+              .includes(
+                this.searchForm
+                  .get('searchQuery')
+                  ?.value?.toLowerCase(),
+              ),
         );
 
         this.totalItems = value?.totalItems;
@@ -108,45 +121,66 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
       'dropdownFacultyCheckbox',
     );
 
-    const dropdownFacultyCheckboxButton = document.getElementById(
-      'dropdownFacultyCheckboxButton',
-    );
+    const dropdownFacultyCheckboxButton =
+      document.getElementById(
+        'dropdownFacultyCheckboxButton',
+      );
 
-    if (dropdownFacultyCheckbox && dropdownFacultyCheckboxButton) {
-      dropdownFacultyCheckboxButton.addEventListener('click', () => {
-        dropdownFacultyCheckbox.classList.toggle('hidden');
-      });
+    if (
+      dropdownFacultyCheckbox &&
+      dropdownFacultyCheckboxButton
+    ) {
+      dropdownFacultyCheckboxButton.addEventListener(
+        'click',
+        () => {
+          dropdownFacultyCheckbox.classList.toggle(
+            'hidden',
+          );
+        },
+      );
     }
 
-    const dropdownSpecializationCheckbox = document.getElementById(
-      'dropdownSpecializationCheckbox',
-    );
+    const dropdownSpecializationCheckbox =
+      document.getElementById(
+        'dropdownSpecializationCheckbox',
+      );
 
-    const dropdownSpecializationCheckboxButton = document.getElementById(
-      'dropdownSpecializationCheckboxButton',
-    );
+    const dropdownSpecializationCheckboxButton =
+      document.getElementById(
+        'dropdownSpecializationCheckboxButton',
+      );
 
     if (
       dropdownSpecializationCheckbox &&
       dropdownSpecializationCheckboxButton
     ) {
-      dropdownSpecializationCheckboxButton.addEventListener('click', () => {
-        dropdownSpecializationCheckbox.classList.toggle('hidden');
-      });
+      dropdownSpecializationCheckboxButton.addEventListener(
+        'click',
+        () => {
+          dropdownSpecializationCheckbox.classList.toggle(
+            'hidden',
+          );
+        },
+      );
     }
 
     const dropdownYearCheckbox = document.getElementById(
       'dropdownYearCheckbox',
     );
 
-    const dropdownYearCheckboxButton = document.getElementById(
-      'dropdownYearCheckboxButton',
-    );
+    const dropdownYearCheckboxButton =
+      document.getElementById('dropdownYearCheckboxButton');
 
-    if (dropdownYearCheckbox && dropdownYearCheckboxButton) {
-      dropdownYearCheckboxButton.addEventListener('click', () => {
-        dropdownYearCheckbox.classList.toggle('hidden');
-      });
+    if (
+      dropdownYearCheckbox &&
+      dropdownYearCheckboxButton
+    ) {
+      dropdownYearCheckboxButton.addEventListener(
+        'click',
+        () => {
+          dropdownYearCheckbox.classList.toggle('hidden');
+        },
+      );
     }
   }
 
@@ -158,13 +192,15 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
     });
 
     this.specializations.forEach(() => {
-      (this.form.controls['specializations'] as FormArray).push(
-        new FormControl(false),
-      );
+      (
+        this.form.controls['specializations'] as FormArray
+      ).push(new FormControl(false));
     });
 
     this.years.forEach(() => {
-      (this.form.controls['years'] as FormArray).push(new FormControl(false));
+      (this.form.controls['years'] as FormArray).push(
+        new FormControl(false),
+      );
     });
 
     this.form.controls['faculties'].valueChanges
@@ -186,7 +222,10 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
       });
   }
 
-  private getSelectedValues(formArrayName: string, sourceArray: any[]) {
+  private getSelectedValues(
+    formArrayName: string,
+    sourceArray: any[],
+  ) {
     return this.form.controls[formArrayName].value
       .map((checked: boolean, index: number) =>
         checked ? sourceArray[index] : null,
@@ -203,11 +242,16 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
       'specializations',
       this.specializations,
     );
-    const selectedYears = this.getSelectedValues('years', this.years);
+    const selectedYears = this.getSelectedValues(
+      'years',
+      this.years,
+    );
 
     const searchQuery$ = this.searchForm
       .get('searchQuery')
-      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef));
+      ?.valueChanges.pipe(
+        takeUntilDestroyed(this.destroyRef),
+      );
 
     const studentResponses$ = this.templateService
       .getAllStudentsResponses(
@@ -239,7 +283,10 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
                 );
                 return of(null);
               }),
-              map((studentResponses) => ({searchQuery, studentResponses})),
+              map((studentResponses) => ({
+                searchQuery,
+                studentResponses,
+              })),
             ),
         ),
       ),
@@ -247,17 +294,20 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
         switchMap((studentResponses) =>
           (searchQuery$ as Observable<any>).pipe(
             startWith(''),
-            map((searchQuery) => ({searchQuery, studentResponses})),
+            map((searchQuery) => ({
+              searchQuery,
+              studentResponses,
+            })),
           ),
         ),
       ),
     ).subscribe(({searchQuery, studentResponses}) => {
-      const searchedResponses = studentResponses?.items?.filter(
-        (element: any) =>
+      const searchedResponses =
+        studentResponses?.items?.filter((element: any) =>
           element?.student?.email
             ?.toLowerCase()
             .includes(searchQuery?.toLowerCase()),
-      );
+        );
 
       this.totalItems = studentResponses?.totalItems;
 
@@ -270,8 +320,10 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
 
   public onStatusChange(status: ResponseStatus): void {
     this.selectedStatus = status;
-    this.page = this.paginationService.getDefaultPageNumber();
-    this.limit = this.paginationService.getDefaultPageSize();
+    this.page =
+      this.paginationService.getDefaultPageNumber();
+    this.limit =
+      this.paginationService.getDefaultPageSize();
     this.getAllStudentsResponses();
   }
 
@@ -287,7 +339,9 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (response) => {
-          const blob = new Blob([response], {type: response.type});
+          const blob = new Blob([response], {
+            type: response.type,
+          });
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
@@ -298,7 +352,9 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
           document.body.removeChild(a);
         },
         () => {
-          this.toasterService.showError('Eroare la descărcarea fișierului!');
+          this.toasterService.showError(
+            'Eroare la descărcarea fișierului!',
+          );
         },
       );
   }
@@ -310,13 +366,18 @@ export class SecretaryHomeComponent implements OnInit, AfterViewInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(
         (response) => {
-          const safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(
-            response.html,
+          const safeHtmlContent =
+            this.sanitizer.bypassSecurityTrustHtml(
+              response.html,
+            );
+          this.templateService.setViewModalContent(
+            safeHtmlContent,
           );
-          this.templateService.setViewModalContent(safeHtmlContent);
         },
         () => {
-          this.toasterService.showError('Eroare la vizualizarea adeverinței!');
+          this.toasterService.showError(
+            'Eroare la vizualizarea adeverinței!',
+          );
         },
       );
   }

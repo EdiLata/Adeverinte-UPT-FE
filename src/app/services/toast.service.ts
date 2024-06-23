@@ -13,11 +13,17 @@ export class ToastService {
   }
 
   public showSuccess(message: string): void {
-    this.toastState.next({message, type: ToastType.SUCCESS});
+    this.toastState.next({
+      message,
+      type: ToastType.SUCCESS,
+    });
   }
 
   public showError(message: string): void {
-    this.toastState.next({message, type: ToastType.ERROR});
+    this.toastState.next({
+      message,
+      type: ToastType.ERROR,
+    });
   }
 
   public closeToast(): void {

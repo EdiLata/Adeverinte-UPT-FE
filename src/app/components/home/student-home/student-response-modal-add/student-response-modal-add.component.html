@@ -6,14 +6,18 @@
     id="overlay"
     class="fixed inset-0 bg-black h-full bg-opacity-50 flex items-center justify-center"
   ></div>
-  <div class="relative flex justify-center items-center h-full p-4">
+  <div
+    class="relative flex justify-center items-center h-full p-4"
+  >
     <div
       class="relative bg-white overflow-auto rounded-lg max-h-[calc(100vh-2rem)] shadow dark:bg-gray-700"
     >
       <div
         class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
       >
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+        <h3
+          class="text-xl font-semibold text-gray-900 dark:text-white"
+        >
           Cere o Nouă Adeverință
         </h3>
         <button
@@ -53,7 +57,12 @@
             name="templateType"
             class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
           >
-            <option value="" hidden selected *ngIf="!templateTypeControl.value">
+            <option
+              value=""
+              hidden
+              selected
+              *ngIf="!templateTypeControl.value"
+            >
               Tip adeverință
             </option>
             <option
@@ -66,7 +75,10 @@
         </form>
         <div *ngIf="templateTypeControl.value">
           <form [formGroup]="dynamicForm">
-            <div *ngFor="let field of templateFields" class="mb-4">
+            <div
+              *ngFor="let field of templateFields"
+              class="mb-4"
+            >
               <label
                 [for]="field"
                 class="block text-sm font-medium text-gray-700"
@@ -99,7 +111,8 @@
           (click)="onSubmit()"
           [disabled]="!isFormValid()"
           [ngClass]="{
-            'bg-gray-200 text-black hover:bg-gray-200': !isFormValid(),
+            'bg-gray-200 text-black hover:bg-gray-200':
+              !isFormValid(),
           }"
           type="button"
           class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
